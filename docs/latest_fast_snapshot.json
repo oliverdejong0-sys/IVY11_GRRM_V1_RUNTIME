@@ -1,16 +1,51 @@
 {
   "schema": "IVY11_GRRM_V1_FAST_DAILY_V1",
-  "generated_utc": "OFFLINE_REFERENCE_ONLY",
-  "target_market_date": "2026-10-02",
+  "generated_utc": "2026-10-06T12:35:38+00:00",
+  "target_market_date": "2026-10-05",
   "frozen_anchor_date": "2026-10-02",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
+  "research_status": "CLEAN3F_vs_SENTINEL_70_75_PARALLEL_PROSPECTIVE",
   "values": {
-    "MSP_MARKET": 30.57204090578797,
-    "MSP_VOL": 42.09647894906859,
-    "MSP_CREDIT_CONTROL": 20.565261554785724,
-    "EQ_MA200_GAP_PCT": 7.128624746142664,
+    "MSP_MARKET": 24.641244373642394,
+    "MSP_VOL": 35.50279931093885,
+    "MSP_CREDIT_CONTROL": 15.290020676896289,
+    "CLEAN3F_VOTE_PCT": 0.0,
+    "CLEAN3F_STRESS": false,
+    "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
-    "SENTINEL_70_75": "NO STRESS"
+    "SENTINEL_70_75": "NO STRESS",
+    "EQ_MA200_GAP_PCT": 7.781792864903481,
+    "D200": "RISK ON",
+    "MODE": "NORMAL MODE",
+    "VIX_RAW": 15.52,
+    "BAA10Y_RAW": 1.47,
+    "AAA10Y_RAW": 1.0,
+    "BAA_DATE": "2026-10-02",
+    "AAA_DATE": "2026-10-02"
   },
-  "note": "Frozen anchor reference only; overwritten by first successful GitHub runtime."
+  "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
+  "source_checks": {
+    "SPY_return_overlap": {
+      "pairs": 12,
+      "max_abs_return_diff": 0.0,
+      "tolerance": 0.0005
+    },
+    "VIX_source": "Cboe VIX Index daily history (official)",
+    "VIX_overlap_gate": {
+      "pairs": 20,
+      "max_abs_diff": 0.0,
+      "tolerance": 0.02,
+      "last_overlap_date": "2026-10-01",
+      "frozen_vix_last_true_observation": "2026-10-01",
+      "excluded_carried_state_date": "2026-10-02"
+    },
+    "VIX_frozen_information_boundary": "2026-10-01 true observation; 2026-10-02 anchor row was carried state",
+    "VIX_url": "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
+    "BAA_source": "FRED BAA10Y",
+    "AAA_source": "FRED AAA10Y",
+    "VIX_sha256": "bffd81e6e30fe543301cc9d54a795618306e6b54178f2a715fb2cce6610da59c",
+    "BAA_sha256": "52726225012a85ed574f32c277480f1a725ba3c0d5e7e79b2bca8da36f3e2198",
+    "AAA_sha256": "30cc4f6e5774ccb404e47c48b34aa2f566bb457d5bd6b75475a7859e33aec879"
+  },
+  "replay_days_after_anchor": 1
 }
