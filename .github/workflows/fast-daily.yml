@@ -1,0 +1,42 @@
+name: IVY11 GRRM Fast Daily Snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Multiple post-close retries. Script itself chooses the latest finalized common SPY/VIX date.
+    - cron: "30 22 * * 1-5"
+    - cron: "30 23 * * 1-5"
+    - cron: "30 0 * * 2-6"
+
+permissions:
+  contents: write
+
+jobs:
+  build-fast-snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build frozen-model fast snapshot
+        run: python src/IVY11_GRRM_V1_build_fast_snapshot.py
+
+      - name: Commit snapshot if changed
+        run: |
+          git config user.name "ivy11-grrm-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/latest_fast_snapshot.json docs/latest_fast_snapshot.md
+          if git diff --cached --quiet; then
+            echo "No snapshot change."
+          else
+            git commit -m "IVY11 GRRM fast snapshot"
+            git push
+          fi
