@@ -105,6 +105,48 @@ def fetch_fred(series_id):
 
     raise RuntimeError(f"{series_id}: authenticated FRED API failed: {last!r}")
 
+def fetch_cboe_vix():
+    """Official Cboe VIX daily close history with overlap validation."""
+    from io import StringIO
+    urls=[
+        "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
+        "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
+    ]
+    headers={"User-Agent":"IVY11_GRRM_V1 research runtime","Accept":"text/csv,*/*"}
+    last=None
+    for url in urls:
+        try:
+            r=requests.get(url,headers=headers,timeout=(15,60),allow_redirects=True)
+            r.raise_for_status()
+            d=pd.read_csv(StringIO(r.text))
+            d.columns=[str(c).strip().upper() for c in d.columns]
+            if "DATE" not in d.columns or "CLOSE" not in d.columns:
+                raise RuntimeError(f"Cboe VIX CSV unexpected columns: {list(d.columns)}")
+            d=d.rename(columns={"DATE":"Date","CLOSE":"VIX"})
+            d["Date"]=pd.to_datetime(d["Date"],errors="coerce")
+            d["VIX"]=pd.to_numeric(d["VIX"],errors="coerce")
+            d=d[["Date","VIX"]].dropna().sort_values("Date").drop_duplicates("Date")
+            if d.empty:
+                raise RuntimeError("Cboe VIX CSV returned no usable rows")
+            return d, r.url, hashlib.sha256(r.content).hexdigest()
+        except Exception as e:
+            last=e
+    raise RuntimeError(f"Cboe VIX official history download failed: {last!r}")
+
+def cboe_vix_overlap_gate(anchor, cboe, min_pairs=10, tol=0.02):
+    a=anchor[["Date","VIX"]].dropna().copy()
+    q=a.merge(cboe,on="Date",how="inner",suffixes=("_ANCHOR","_CBOE")).sort_values("Date")
+    q=q[q["Date"]<=anchor["Date"].max()].tail(20).copy()
+    if len(q)<min_pairs:
+        raise RuntimeError(f"Cboe VIX overlap insufficient: {len(q)} pairs")
+    q["abs_diff"]=(q["VIX_ANCHOR"]-q["VIX_CBOE"]).abs()
+    mx=float(q["abs_diff"].max())
+    if mx>tol:
+        raise RuntimeError(f"Cboe VIX overlap parity failed: {mx} > {tol}")
+    return {"pairs":int(len(q)),"max_abs_diff":mx,"tolerance":tol,
+            "last_overlap_date":q["Date"].max().date().isoformat()}
+
+
 def fetch_spy(start_date):
     import yfinance as yf
     start=pd.Timestamp(start_date).date().isoformat()
@@ -207,7 +249,8 @@ def main():
     spy=fetch_spy(anchor_end-pd.Timedelta(days=50))
     spy_gate=spy_overlap_gate(anchor,spy)
 
-    vix,vix_url,vix_sha=fetch_fred("VIXCLS")
+    vix,vix_url,vix_sha=fetch_cboe_vix()
+    vix_gate=cboe_vix_overlap_gate(anchor,vix)
     baa,baa_url,baa_sha=fetch_fred("BAA10Y")
     aaa,aaa_url,aaa_sha=fetch_fred("AAA10Y")
 
@@ -247,7 +290,7 @@ def main():
         vrow=vix.loc[vix.Date==d]
         if vrow.empty:
             raise RuntimeError(f"VIX missing for {d.date()}")
-        vix_val=float(vrow.iloc[-1].VIXCLS)
+        vix_val=float(vrow.iloc[-1].VIX)
         prior_vix=pd.concat(
             [vix_hist["VIX"],pd.Series([x for _,x in appended_vix])],
             ignore_index=True
@@ -308,7 +351,9 @@ def main():
         "clean3f_vs_sentinel_70_75":comparison,
         "source_checks":{
             "SPY_return_overlap":spy_gate,
-            "VIX_source":"FRED VIXCLS",
+            "VIX_source":"Cboe VIX Index daily history (official)",
+            "VIX_overlap_gate":vix_gate,
+            "VIX_url":vix_url,
             "BAA_source":"FRED BAA10Y",
             "AAA_source":"FRED AAA10Y",
             "VIX_sha256":vix_sha,
