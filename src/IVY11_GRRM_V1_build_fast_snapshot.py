@@ -36,6 +36,13 @@ KERNEL = HERE/"runtime/IVY11_GRRM_V1-GO_CLEAN3F_Live_Kernel.py"
 OUT_JSON = HERE/"docs/latest_fast_snapshot.json"
 OUT_MD = HERE/"docs/latest_fast_snapshot.md"
 
+# Frozen source-availability boundary:
+# The 2026-10-02 state seed was built with VIX information available only
+# through 2026-10-01.  The anchor row on 2026-10-02 therefore legitimately
+# carries the 2026-10-01 VIX value forward.  Do not compare a later-published
+# true 2026-10-02 Cboe close against that carried state row.
+FROZEN_VIX_LAST_TRUE_OBS_DATE = pd.Timestamp("2026-10-01")
+
 def load_kernel():
     spec=importlib.util.spec_from_file_location("ivy_clean_live_kernel",KERNEL)
     mod=importlib.util.module_from_spec(spec)
@@ -134,17 +141,49 @@ def fetch_cboe_vix():
     raise RuntimeError(f"Cboe VIX official history download failed: {last!r}")
 
 def cboe_vix_overlap_gate(anchor, cboe, min_pairs=10, tol=0.02):
+    """
+    Validate the official Cboe VIX close against the frozen historical VIX
+    only over dates that were genuine VIX observations at the freeze boundary.
+
+    Critical PIT rule:
+    - state seed date: 2026-10-02
+    - latest true VIX observation available when that seed was frozen: 2026-10-01
+    - the anchor's 2026-10-02 VIX value is therefore a legitimate carry-forward
+      state value, NOT a 2026-10-02 close observation.
+
+    A later-published true 2026-10-02 Cboe close must never be used to
+    invalidate the already-frozen 2026-10-02 state.  That would be look-ahead.
+    """
     a=anchor[["Date","VIX"]].dropna().copy()
+    a=a[a["Date"]<=FROZEN_VIX_LAST_TRUE_OBS_DATE].copy()
+
     q=a.merge(cboe,on="Date",how="inner",suffixes=("_ANCHOR","_CBOE")).sort_values("Date")
-    q=q[q["Date"]<=anchor["Date"].max()].tail(20).copy()
+    q=q.tail(20).copy()
+
     if len(q)<min_pairs:
         raise RuntimeError(f"Cboe VIX overlap insufficient: {len(q)} pairs")
+
     q["abs_diff"]=(q["VIX_ANCHOR"]-q["VIX_CBOE"]).abs()
     mx=float(q["abs_diff"].max())
+
     if mx>tol:
-        raise RuntimeError(f"Cboe VIX overlap parity failed: {mx} > {tol}")
-    return {"pairs":int(len(q)),"max_abs_diff":mx,"tolerance":tol,
-            "last_overlap_date":q["Date"].max().date().isoformat()}
+        worst=q.loc[q["abs_diff"].idxmax()]
+        raise RuntimeError(
+            "Cboe VIX overlap parity failed before frozen information boundary: "
+            f"max_diff={mx} > {tol}; "
+            f"worst_date={worst['Date'].date()}; "
+            f"anchor={worst['VIX_ANCHOR']}; cboe={worst['VIX_CBOE']}"
+        )
+
+    return {
+        "pairs":int(len(q)),
+        "max_abs_diff":mx,
+        "tolerance":tol,
+        "last_overlap_date":q["Date"].max().date().isoformat(),
+        "frozen_vix_last_true_observation":
+            FROZEN_VIX_LAST_TRUE_OBS_DATE.date().isoformat(),
+        "excluded_carried_state_date":"2026-10-02",
+    }
 
 
 def fetch_spy(start_date):
@@ -353,6 +392,7 @@ def main():
             "SPY_return_overlap":spy_gate,
             "VIX_source":"Cboe VIX Index daily history (official)",
             "VIX_overlap_gate":vix_gate,
+            "VIX_frozen_information_boundary":"2026-10-01 true observation; 2026-10-02 anchor row was carried state",
             "VIX_url":vix_url,
             "BAA_source":"FRED BAA10Y",
             "AAA_source":"FRED AAA10Y",
