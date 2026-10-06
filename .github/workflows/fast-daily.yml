@@ -3,7 +3,7 @@ name: IVY11 GRRM Fast Daily Snapshot
 on:
   workflow_dispatch:
   schedule:
-    # Multiple post-close retries. Script itself chooses the latest finalized common SPY/VIX date.
+    # Post-close retries. The runtime itself chooses the latest finalized common SPY/VIX date.
     - cron: "30 22 * * 1-5"
     - cron: "30 23 * * 1-5"
     - cron: "30 0 * * 2-6"
@@ -27,6 +27,8 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build frozen-model fast snapshot
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python src/IVY11_GRRM_V1_build_fast_snapshot.py
 
       - name: Commit snapshot if changed
