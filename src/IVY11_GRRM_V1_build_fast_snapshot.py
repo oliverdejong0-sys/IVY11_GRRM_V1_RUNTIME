@@ -50,26 +50,60 @@ def current_percentile(values, x):
     return float(100.0*(np.sum(a<=float(x))-0.5)/len(a))
 
 def fetch_fred(series_id):
-    url=f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
-    headers={"User-Agent":"Mozilla/5.0 IVY11_GRRM_V1 research runtime"}
+    """
+    Official authenticated FRED API v1.
+    Full history from 1990-01-01 is requested because the frozen score
+    percentiles were built from that evidence window.  This avoids the
+    bulk fredgraph.csv transport that timed out from GitHub Actions.
+    """
+    import os
+    key=os.environ.get("FRED_API_KEY","").strip()
+    if not key:
+        raise RuntimeError(
+            "FRED_API_KEY GitHub Actions secret is missing. "
+            "Fail closed; do not fall back to another provider."
+        )
+
+    url="https://api.stlouisfed.org/fred/series/observations"
+    params={
+        "series_id":series_id,
+        "api_key":key,
+        "file_type":"json",
+        "observation_start":"1990-01-01",
+        "sort_order":"asc",
+        "limit":100000,
+    }
+    headers={
+        "User-Agent":"IVY11_GRRM_V1 research runtime",
+        "Accept":"application/json",
+    }
+
     last=None
     for wait in [0,2,5]:
-        if wait: time.sleep(wait)
+        if wait:
+            time.sleep(wait)
         try:
-            r=requests.get(url,headers=headers,timeout=(15,90))
+            r=requests.get(url,params=params,headers=headers,timeout=(15,60))
             r.raise_for_status()
-            from io import StringIO
-            d=pd.read_csv(StringIO(r.text))
-            d.columns=["Date",series_id]
+            j=r.json()
+            obs=j.get("observations",[])
+            if not obs:
+                raise RuntimeError(f"{series_id}: FRED API returned no observations")
+            d=pd.DataFrame(
+                [(o.get("date"),o.get("value")) for o in obs],
+                columns=["Date",series_id]
+            )
             d["Date"]=pd.to_datetime(d["Date"],errors="coerce")
             d[series_id]=pd.to_numeric(d[series_id],errors="coerce")
             d=d.dropna().sort_values("Date").drop_duplicates("Date")
             if d.empty:
-                raise RuntimeError(f"{series_id}: empty FRED data")
-            return d, url, hashlib.sha256(r.content).hexdigest()
+                raise RuntimeError(f"{series_id}: no numeric FRED API observations")
+            # Never persist/log the API key.  Fingerprint response content only.
+            return d, f"FRED_API:{series_id}", hashlib.sha256(r.content).hexdigest()
         except Exception as e:
             last=e
-    raise RuntimeError(f"{series_id}: FRED download failed: {last!r}")
+
+    raise RuntimeError(f"{series_id}: authenticated FRED API failed: {last!r}")
 
 def fetch_spy(start_date):
     import yfinance as yf
