@@ -12,7 +12,7 @@
 
 ## Action Layer
 - MSP Market: **24.64**
-- MSP Credit: **15.29**
+- MSP Credit: **14.71**
 - MSP Volatility: **35.50**
 - Fast Sentinel 65/70: **NO ALERT**
 - CLEAN3F Vote: **0.0%**
