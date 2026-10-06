@@ -1,0 +1,1001 @@
+{
+  "kernel": "IVY11_GRRM_V1-GO",
+  "anchor_date": "2026-10-02",
+  "vp_constant": 50.0,
+  "last_msp": [
+    30.474195779315032,
+    32.14219168551444,
+    34.96182021713506,
+    37.425307459378935,
+    30.758626453530876,
+    33.57151072962066,
+    35.15014620581997,
+    35.957081596240805,
+    29.133062079343386,
+    26.859577799810125,
+    23.75286448736723,
+    22.39598083437146,
+    26.1532987623376,
+    27.49298574524256,
+    25.72427314587807,
+    30.33021382126421,
+    29.815997432406657,
+    31.458816031720037,
+    32.50895242813157,
+    31.07792713654743
+  ],
+  "param_states": [
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    },
+    {
+      "prev_regime": 3,
+      "fallrun": 0
+    }
+  ]
+}

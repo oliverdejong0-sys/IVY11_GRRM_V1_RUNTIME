@@ -1,0 +1,16 @@
+{
+  "schema": "IVY11_GRRM_V1_FAST_DAILY_V1",
+  "generated_utc": "OFFLINE_REFERENCE_ONLY",
+  "target_market_date": "2026-10-02",
+  "frozen_anchor_date": "2026-10-02",
+  "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
+  "values": {
+    "MSP_MARKET": 30.57204090578797,
+    "MSP_VOL": 42.09647894906859,
+    "MSP_CREDIT_CONTROL": 20.565261554785724,
+    "EQ_MA200_GAP_PCT": 7.128624746142664,
+    "FAST_SENTINEL_65_70": "NO ALERT",
+    "SENTINEL_70_75": "NO STRESS"
+  },
+  "note": "Frozen anchor reference only; overwritten by first successful GitHub runtime."
+}
