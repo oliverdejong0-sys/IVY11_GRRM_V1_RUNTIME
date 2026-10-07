@@ -28,8 +28,10 @@
 ## Crash-/Drawdown-Phase
 - Phase: **NONE – Keine Crashphase**
 - Decision Status: **NO ACTION**
-- USER POLICY Soll-Allokation für R4: **15 % Cash / 60 % IVY4 / 25 % Makro-Defensiv**
+- USER POLICY Soll-Allokation für R4: **40 % Cash / 30 % IVY4 / 20 % Makro-Defensiv / 10 % Gold**
 - Hinweis: USER POLICY / defensive Orientierung; keine automatische oder backtest-validierte Cash-Action.
+- Makro intern: **53,33 % Commodities / 13,33 % Mining / 13,33 % Health Care / 13,33 % Consumer Staples / 6,67 % Utilities**.
+- Portfolioanteile Makro aktuell: **10.67 % / 2.67 % / 2.67 % / 2.67 % / 1.32 %**.
 
 ## Operating mode
 **NORMAL MODE**

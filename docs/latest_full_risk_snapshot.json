@@ -1,7 +1,7 @@
 {
   "schema": "IVY11_GRRM_V1_FULL_RISK_V1",
   "target_market_date": "2026-10-06",
-  "generated_utc": "2026-10-07T06:12:23+00:00",
+  "generated_utc": "2026-10-07T07:43:01+00:00",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
@@ -52,9 +52,43 @@
   "strategic_policy_orientation": {
     "policy_type": "USER_POLICY_DEFENSIVE_ORIENTATION_NOT_AUTOMATIC",
     "regime": 4,
-    "cash": 15,
-    "ivy4": 60,
-    "macro_defensive": 25
+    "cash": 40,
+    "ivy4": 30,
+    "macro_defensive": 20,
+    "gold": 10,
+    "macro_breakdown": {
+      "commodities": {
+        "name": "iShares Diversified Commodity Swap UCITS ETF – A2DK6R",
+        "isin": "IE00BDFL4P12",
+        "weight_in_block": 53.33,
+        "portfolio_pct": 10.67
+      },
+      "global_mining": {
+        "name": "VanEck S&P Global Mining UCITS ETF",
+        "isin": "IE00BDFBTQ78",
+        "weight_in_block": 13.33,
+        "portfolio_pct": 2.67
+      },
+      "health_care": {
+        "name": "SPDR MSCI World Health Care UCITS ETF",
+        "isin": "IE00BYTRRB94",
+        "weight_in_block": 13.33,
+        "portfolio_pct": 2.67
+      },
+      "consumer_staples": {
+        "name": "SPDR MSCI World Consumer Staples UCITS ETF",
+        "isin": "IE00BYTRR756",
+        "weight_in_block": 13.33,
+        "portfolio_pct": 2.67
+      },
+      "utilities": {
+        "name": "SPDR MSCI World Utilities UCITS ETF",
+        "isin": "IE00BYTRRH56",
+        "weight_in_block": 6.67,
+        "portfolio_pct": 1.32
+      }
+    },
+    "architecture_note": "IVY4 is the primary return/rotation engine; macro-defensive is a smaller strategic satellite; gold is fixed at 10%; cash is the regime-sensitive protection buffer."
   },
   "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
   "operating_mode": "NORMAL MODE",
