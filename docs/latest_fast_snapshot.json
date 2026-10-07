@@ -1,6 +1,6 @@
 {
   "schema": "IVY11_GRRM_V1_FAST_DAILY_V1",
-  "generated_utc": "2026-10-07T07:43:01+00:00",
+  "generated_utc": "2026-10-07T22:45:37+00:00",
   "target_market_date": "2026-10-06",
   "frozen_anchor_date": "2026-10-02",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
@@ -8,7 +8,7 @@
   "values": {
     "MSP_MARKET": 20.711998427838633,
     "MSP_VOL": 32.10786952309183,
-    "MSP_CREDIT_CONTROL": 14.70620239390642,
+    "MSP_CREDIT_CONTROL": 14.715482537264716,
     "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
@@ -23,8 +23,8 @@
     "VIX_RAW": 15.01,
     "BAA10Y_RAW": 1.46,
     "AAA10Y_RAW": 0.99,
-    "BAA_DATE": "2026-10-05",
-    "AAA_DATE": "2026-10-05"
+    "BAA_DATE": "2026-10-06",
+    "AAA_DATE": "2026-10-06"
   },
   "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
   "source_checks": {
@@ -47,8 +47,8 @@
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
     "VIX_sha256": "cfcb9dce25bbbbd83aedca9a1480468bb25db2e988b3e893a4eebabb1905e1ab",
-    "BAA_sha256": "d71d9285844d5a571fe0a106e02ed4ce95eb831c82ca6b35f3c6c9aee836e5ef",
-    "AAA_sha256": "8f017f782ee7a00535086e72f8014eed27da8940dfe2f4bfa816ae2ad349627f"
+    "BAA_sha256": "aa9936737222bea0e4c37329cc34494715c3f91e4c3aa7379fee399063bc7087",
+    "AAA_sha256": "94dec6b4e592b80c5dc30121faaeed6e325d6b2b37e4b59efe6ac06b7e93336f"
   },
   "replay_days_after_anchor": 2
 }
