@@ -37,6 +37,43 @@ REGIMES = {
     7:"Systemischer Crash",
 }
 
+
+POLICY = {
+    1:{"cash":15,"ivy4":55,"macro_defensive":30},
+    2:{"cash":5,"ivy4":70,"macro_defensive":25},
+    3:{"cash":5,"ivy4":75,"macro_defensive":20},
+    4:{"cash":15,"ivy4":60,"macro_defensive":25},
+    5:{"cash":35,"ivy4":40,"macro_defensive":25},
+    6:{"cash":55,"ivy4":20,"macro_defensive":25},
+    7:{"cash":35,"ivy4":35,"macro_defensive":30},
+}
+
+def classify_crash_phase(regime, values):
+    """Advisory diagnostic only; not a backtest-validated trading rule."""
+    dd=float(values["EQ_DRAWDOWN_PCT"])
+    r5=float(values["EQ_RET_5D_PCT"])
+    r20=float(values["EQ_RET_20D_PCT"])
+    gap=float(values["EQ_MA200_GAP_PCT"])
+    market=float(values["MSP_MARKET"])
+    vol=float(values["MSP_VOL"])
+    credit=float(values["MSP_CREDIT_CONTROL"])
+    confirmed=bool(values["CLEAN3F_STRESS"]) or str(values["SENTINEL_70_75"])=="STRESS"
+
+    # D requires a very advanced sell-off plus either BASE capitulation or visible stabilization.
+    stabilizing=(r5>=0 and r20>-8) or (r5>-2 and market<75 and vol<80)
+    if regime==1 or (dd<=-35 and stabilizing):
+        return "D", "Kapitulation/Bodenbildungszone", "PREPARE RE-RISKING"
+    # C = much of the drawdown already realized.
+    if dd<=-20 or (dd<=-15 and confirmed and gap<0):
+        return "C", "Fortgeschrittener Crash", "HOLD / NO CATCH-UP SELLING"
+    # B = clear stress with meaningful but not yet advanced drawdown.
+    if regime>=6 or (dd<=-7 and (confirmed or market>=65 or vol>=70 or gap<0)):
+        return "B", "Frühe Crashphase", "DE-RISK NOW"
+    # A = warning state; no forced action.
+    if regime>=5 or market>=55 or vol>=60 or credit>=60 or dd<=-5 or gap<=2:
+        return "A", "Frühwarnung / Pre-Crash", "DE-RISK PARTIAL"
+    return "NONE", "Keine Crashphase", "NO ACTION"
+
 def main():
     fast=json.loads(FAST.read_text(encoding="utf-8"))
     if fast.get("schema")!="IVY11_GRRM_V1_FAST_DAILY_V1":
@@ -48,7 +85,8 @@ def main():
     required=[
         "MSP_MARKET","MSP_VOL","MSP_CREDIT_CONTROL","CLEAN3F_VOTE_PCT",
         "CLEAN3F_STRESS","FAST_SENTINEL_65_70","SENTINEL_70_75",
-        "EQ_MA200_GAP_PCT","D200","MODE"
+        "EQ_MA200_GAP_PCT","EQ_DRAWDOWN_PCT","EQ_RET_5D_PCT","EQ_RET_20D_PCT",
+        "D200","MODE"
     ]
     missing=[x for x in required if x not in values]
     if missing:
@@ -81,6 +119,7 @@ def main():
         base_valid_for_management=False
 
     regime=int(br["BASE_REGIME"])
+    phase_code,phase_name,phase_action=classify_crash_phase(regime,values)
     result={
         "schema":"IVY11_GRRM_V1_FULL_RISK_V1",
         "target_market_date":fast["target_market_date"],
@@ -102,6 +141,21 @@ def main():
             "SOURCE_NOTE":str(br.get("SOURCE_NOTE","")),
         },
         "fast_action":values,
+        "crash_phase":{
+            "code":phase_code,
+            "name":phase_name,
+            "decision_status":phase_action,
+            "drawdown_pct":float(values["EQ_DRAWDOWN_PCT"]),
+            "ret_5d_pct":float(values["EQ_RET_5D_PCT"]),
+            "ret_20d_pct":float(values["EQ_RET_20D_PCT"]),
+            "ma200_gap_pct":float(values["EQ_MA200_GAP_PCT"]),
+            "method_note":"Advisory diagnostic; phase uses regime, market/credit/volatility stress, 200D, drawdown and 5D/20D velocity. Not a backtest-validated automatic action rule.",
+        },
+        "strategic_policy_orientation":{
+            "policy_type":"USER_POLICY_DEFENSIVE_ORIENTATION_NOT_AUTOMATIC",
+            "regime":regime,
+            **POLICY[regime],
+        },
         "clean3f_vs_sentinel_70_75":fast["clean3f_vs_sentinel_70_75"],
         "operating_mode":mode if base_valid_for_management else "FULL BASE REFRESH REQUIRED",
         "source_checks":fast.get("source_checks",{}),
@@ -141,8 +195,17 @@ def main():
 - CLEAN3F Stress: **{values['CLEAN3F_STRESS']}**
 - Sentinel 70/75: **{values['SENTINEL_70_75']}**
 - 200D gap: **{float(values['EQ_MA200_GAP_PCT']):.2f}%**
+- Drawdown vom ATH: **{float(values['EQ_DRAWDOWN_PCT']):.2f}%**
+- 5D-Bewegung: **{float(values['EQ_RET_5D_PCT']):.2f}%**
+- 20D-Bewegung: **{float(values['EQ_RET_20D_PCT']):.2f}%**
 - 200D: **{values['D200']}**
 - CLEAN3F vs. 70/75: **{fast['clean3f_vs_sentinel_70_75']}**
+
+## Crash-/Drawdown-Phase
+- Phase: **{phase_code} – {phase_name}**
+- Decision Status: **{phase_action}**
+- USER POLICY Soll-Allokation für R{regime}: **{POLICY[regime]['cash']} % Cash / {POLICY[regime]['ivy4']} % IVY4 / {POLICY[regime]['macro_defensive']} % Makro-Defensiv**
+- Hinweis: USER POLICY / defensive Orientierung; keine automatische oder backtest-validierte Cash-Action.
 
 ## Operating mode
 **{result['operating_mode']}**
