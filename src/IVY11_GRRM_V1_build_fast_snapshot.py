@@ -258,7 +258,14 @@ def market_score_from_equity(eq,target):
         hist=f.loc[:target,c].dropna()
         p=current_percentile(hist,cur[c])
         parts[c]=float(100-p)
-    return float(np.mean(list(parts.values()))),float(cur["EQ_MA200_GAP"]),parts
+    ret5=100*(px/px.shift(5)-1)
+    ret20=100*(px/px.shift(20)-1)
+    diag={
+        "EQ_DRAWDOWN_PCT":float(cur["EQ_DRAWDOWN"]),
+        "EQ_RET_5D_PCT":float(ret5.loc[target]) if pd.notna(ret5.loc[target]) else None,
+        "EQ_RET_20D_PCT":float(ret20.loc[target]) if pd.notna(ret20.loc[target]) else None,
+    }
+    return float(np.mean(list(parts.values()))),float(cur["EQ_MA200_GAP"]),parts,diag
 
 def native_current_score(df,col,target):
     q=df[df.Date<=target].copy()
@@ -324,7 +331,7 @@ def main():
     rows=[]
 
     for d in replay_dates:
-        market,gap,parts=market_score_from_equity(eq,d)
+        market,gap,parts,eq_diag=market_score_from_equity(eq,d)
 
         vrow=vix.loc[vix.Date==d]
         if vrow.empty:
@@ -360,6 +367,9 @@ def main():
             "FAST_SENTINEL_65_70":"ALERT" if s6570 else "NO ALERT",
             "SENTINEL_70_75":"STRESS" if s7075 else "NO STRESS",
             "EQ_MA200_GAP_PCT":gap,
+            "EQ_DRAWDOWN_PCT":eq_diag["EQ_DRAWDOWN_PCT"],
+            "EQ_RET_5D_PCT":eq_diag["EQ_RET_5D_PCT"],
+            "EQ_RET_20D_PCT":eq_diag["EQ_RET_20D_PCT"],
             "D200":"RISK ON" if gap>0 else "RISK OFF",
             "MODE":mode,
             "VIX_RAW":vix_val,
@@ -422,6 +432,9 @@ def main():
 | CLEAN3F | {clean_state} |
 | Sentinel 70/75 | {latest['SENTINEL_70_75']} |
 | 200D-Abstand | {latest['EQ_MA200_GAP_PCT']:.2f}% |
+| Drawdown vom ATH | {latest['EQ_DRAWDOWN_PCT']:.2f}% |
+| 5D-Bewegung | {latest['EQ_RET_5D_PCT']:.2f}% |
+| 20D-Bewegung | {latest['EQ_RET_20D_PCT']:.2f}% |
 | 200D | {latest['D200']} |
 | CLEAN3F vs. 70/75 | {comparison} |
 
