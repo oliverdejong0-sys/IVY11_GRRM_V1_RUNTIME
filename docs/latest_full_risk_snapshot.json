@@ -1,11 +1,11 @@
 {
   "schema": "IVY11_GRRM_V1_FULL_RISK_V1",
-  "target_market_date": "2026-10-06",
-  "generated_utc": "2026-10-08T00:54:23+00:00",
+  "target_market_date": "2026-10-07",
+  "generated_utc": "2026-10-08T22:46:47+00:00",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
-    "base_staleness_calendar_days": 4,
+    "base_staleness_calendar_days": 5,
     "calm_mode_max_staleness_days": 7,
     "alert_or_stress_requires_same_date_base": true,
     "status": "VALID_STALE_WITHIN_CALM_POLICY",
@@ -19,34 +19,34 @@
     "SOURCE_NOTE": "FROZEN_BASE_DIAGNOSTIC_ANCHOR_REFERENCE_ONLY"
   },
   "fast_action": {
-    "MSP_MARKET": 20.711998427838633,
-    "MSP_VOL": 32.10786952309183,
-    "MSP_CREDIT_CONTROL": 14.715482537264716,
-    "CLEAN3F_VOTE_PCT": 0,
+    "MSP_MARKET": 27.717422133610498,
+    "MSP_VOL": 32.57804090419806,
+    "MSP_CREDIT_CONTROL": 14.447345517841601,
+    "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
     "SENTINEL_70_75": "NO STRESS",
-    "EQ_MA200_GAP_PCT": 8.301006056860016,
-    "EQ_DRAWDOWN_PCT": 0,
-    "EQ_RET_5D_PCT": 1.9484447017260376,
-    "EQ_RET_20D_PCT": 1.9667684448247957,
+    "EQ_MA200_GAP_PCT": 7.96557004314844,
+    "EQ_DRAWDOWN_PCT": -0.24003081645027624,
+    "EQ_RET_5D_PCT": 1.9131119582102452,
+    "EQ_RET_20D_PCT": 2.196999555625867,
     "D200": "RISK ON",
     "MODE": "NORMAL MODE",
-    "VIX_RAW": 15.01,
+    "VIX_RAW": 15.08,
     "BAA10Y_RAW": 1.46,
-    "AAA10Y_RAW": 0.99,
-    "BAA_DATE": "2026-10-06",
-    "AAA_DATE": "2026-10-06"
+    "AAA10Y_RAW": 0.98,
+    "BAA_DATE": "2026-10-07",
+    "AAA_DATE": "2026-10-07"
   },
   "crash_phase": {
     "code": "NONE",
     "name": "Keine Crashphase",
     "decision_status": "NO ACTION",
-    "drawdown_pct": 0,
-    "ret_5d_pct": 1.9484447017260376,
-    "ret_20d_pct": 1.9667684448247957,
-    "ma200_gap_pct": 8.301006056860016,
+    "drawdown_pct": -0.24003081645027624,
+    "ret_5d_pct": 1.9131119582102452,
+    "ret_20d_pct": 2.196999555625867,
+    "ma200_gap_pct": 7.96557004314844,
     "method_note": "Advisory diagnostic; phase uses regime, market/credit/volatility stress, 200D, drawdown and 5D/20D velocity. Not a backtest-validated automatic action rule."
   },
   "strategic_policy_orientation": {
@@ -54,36 +54,36 @@
     "policy_type": "USER_POLICY_DEFENSIVE_ORIENTATION_NOT_AUTOMATIC",
     "regime": 4,
     "current_regime_policy": {
-      "strategic_cash": 20,
+      "strategic_cash": 20.0,
       "ivy4_budget": 47.5
     },
     "all_regime_policy": {
       "1": {
-        "strategic_cash": 20,
+        "strategic_cash": 20.0,
         "ivy4_budget": 47.5
       },
       "2": {
-        "strategic_cash": 10,
+        "strategic_cash": 10.0,
         "ivy4_budget": 57.5
       },
       "3": {
-        "strategic_cash": 0,
+        "strategic_cash": 0.0,
         "ivy4_budget": 67.5
       },
       "4": {
-        "strategic_cash": 20,
+        "strategic_cash": 20.0,
         "ivy4_budget": 47.5
       },
       "5": {
-        "strategic_cash": 35,
+        "strategic_cash": 35.0,
         "ivy4_budget": 32.5
       },
       "6": {
-        "strategic_cash": 55,
+        "strategic_cash": 55.0,
         "ivy4_budget": 12.5
       },
       "7": {
-        "strategic_cash": 45,
+        "strategic_cash": 45.0,
         "ivy4_budget": 22.5
       }
     },
@@ -97,17 +97,17 @@
       "broad_commodities": {
         "name": "iShares Diversified Commodity Swap UCITS ETF",
         "isin": "IE00BDFL4P12",
-        "portfolio_pct": 10
+        "portfolio_pct": 10.0
       },
       "global_mining": {
         "name": "VanEck S&P Global Mining UCITS ETF",
         "isin": "IE00BDFBTQ78",
-        "portfolio_pct": 5
+        "portfolio_pct": 5.0
       },
       "global_core": {
         "name": "State Street SPDR MSCI ACWI IMI UCITS ETF (Acc)",
         "isin": "IE00B3YLTY66",
-        "portfolio_pct": 10
+        "portfolio_pct": 10.0
       }
     },
     "regime_sensitive_total_pct": 67.5,
@@ -118,13 +118,13 @@
   "source_checks": {
     "SPY_return_overlap": {
       "pairs": 12,
-      "max_abs_return_diff": 0,
+      "max_abs_return_diff": 0.0,
       "tolerance": 0.0005
     },
     "VIX_source": "Cboe VIX Index daily history (official)",
     "VIX_overlap_gate": {
       "pairs": 20,
-      "max_abs_diff": 0,
+      "max_abs_diff": 0.0,
       "tolerance": 0.02,
       "last_overlap_date": "2026-10-01",
       "frozen_vix_last_true_observation": "2026-10-01",
@@ -134,8 +134,8 @@
     "VIX_url": "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
-    "VIX_sha256": "cfcb9dce25bbbbd83aedca9a1480468bb25db2e988b3e893a4eebabb1905e1ab",
-    "BAA_sha256": "aa9936737222bea0e4c37329cc34494715c3f91e4c3aa7379fee399063bc7087",
-    "AAA_sha256": "94dec6b4e592b80c5dc30121faaeed6e325d6b2b37e4b59efe6ac06b7e93336f"
+    "VIX_sha256": "5c2f2ed585842efb26eb040cd18a1f7f092e92f6db94fc68756d48078b15bb32",
+    "BAA_sha256": "9c2c550517acd251d306a0c4b75297d8887cb2da31f4f106278296706ad7c948",
+    "AAA_sha256": "dfdd1478ad992d098ab1e2df183f46e425fe869960522f2511621c34567cfa13"
   }
 }
