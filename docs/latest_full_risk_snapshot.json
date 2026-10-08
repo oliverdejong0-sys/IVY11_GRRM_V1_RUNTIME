@@ -1,7 +1,7 @@
 {
   "schema": "IVY11_GRRM_V1_FULL_RISK_V1",
   "target_market_date": "2026-10-06",
-  "generated_utc": "2026-10-07T23:36:18+00:00",
+  "generated_utc": "2026-10-08T00:54:23+00:00",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
