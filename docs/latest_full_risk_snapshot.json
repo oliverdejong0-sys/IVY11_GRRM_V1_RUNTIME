@@ -22,13 +22,13 @@
     "MSP_MARKET": 20.711998427838633,
     "MSP_VOL": 32.10786952309183,
     "MSP_CREDIT_CONTROL": 14.715482537264716,
-    "CLEAN3F_VOTE_PCT": 0.0,
+    "CLEAN3F_VOTE_PCT": 0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
     "SENTINEL_70_75": "NO STRESS",
     "EQ_MA200_GAP_PCT": 8.301006056860016,
-    "EQ_DRAWDOWN_PCT": 0.0,
+    "EQ_DRAWDOWN_PCT": 0,
     "EQ_RET_5D_PCT": 1.9484447017260376,
     "EQ_RET_20D_PCT": 1.9667684448247957,
     "D200": "RISK ON",
@@ -43,65 +43,88 @@
     "code": "NONE",
     "name": "Keine Crashphase",
     "decision_status": "NO ACTION",
-    "drawdown_pct": 0.0,
+    "drawdown_pct": 0,
     "ret_5d_pct": 1.9484447017260376,
     "ret_20d_pct": 1.9667684448247957,
     "ma200_gap_pct": 8.301006056860016,
     "method_note": "Advisory diagnostic; phase uses regime, market/credit/volatility stress, 200D, drawdown and 5D/20D velocity. Not a backtest-validated automatic action rule."
   },
   "strategic_policy_orientation": {
+    "policy_version": "V5.0",
     "policy_type": "USER_POLICY_DEFENSIVE_ORIENTATION_NOT_AUTOMATIC",
     "regime": 4,
-    "cash": 40,
-    "ivy4": 30,
-    "macro_defensive": 20,
-    "gold": 10,
-    "macro_breakdown": {
-      "commodities": {
-        "name": "iShares Diversified Commodity Swap UCITS ETF – A2DK6R",
+    "current_regime_policy": {
+      "strategic_cash": 20,
+      "ivy4_budget": 47.5
+    },
+    "all_regime_policy": {
+      "1": {
+        "strategic_cash": 20,
+        "ivy4_budget": 47.5
+      },
+      "2": {
+        "strategic_cash": 10,
+        "ivy4_budget": 57.5
+      },
+      "3": {
+        "strategic_cash": 0,
+        "ivy4_budget": 67.5
+      },
+      "4": {
+        "strategic_cash": 20,
+        "ivy4_budget": 47.5
+      },
+      "5": {
+        "strategic_cash": 35,
+        "ivy4_budget": 32.5
+      },
+      "6": {
+        "strategic_cash": 55,
+        "ivy4_budget": 12.5
+      },
+      "7": {
+        "strategic_cash": 45,
+        "ivy4_budget": 22.5
+      }
+    },
+    "fixed_sleeve_total_pct": 32.5,
+    "fixed_sleeve": {
+      "gold": {
+        "name": "EUWAX Gold II",
+        "isin": "DE000EWG2LD7",
+        "portfolio_pct": 7.5
+      },
+      "broad_commodities": {
+        "name": "iShares Diversified Commodity Swap UCITS ETF",
         "isin": "IE00BDFL4P12",
-        "weight_in_block": 53.33,
-        "portfolio_pct": 10.67
+        "portfolio_pct": 10
       },
       "global_mining": {
         "name": "VanEck S&P Global Mining UCITS ETF",
         "isin": "IE00BDFBTQ78",
-        "weight_in_block": 13.33,
-        "portfolio_pct": 2.67
+        "portfolio_pct": 5
       },
-      "health_care": {
-        "name": "SPDR MSCI World Health Care UCITS ETF",
-        "isin": "IE00BYTRRB94",
-        "weight_in_block": 13.33,
-        "portfolio_pct": 2.67
-      },
-      "consumer_staples": {
-        "name": "SPDR MSCI World Consumer Staples UCITS ETF",
-        "isin": "IE00BYTRR756",
-        "weight_in_block": 13.33,
-        "portfolio_pct": 2.67
-      },
-      "utilities": {
-        "name": "SPDR MSCI World Utilities UCITS ETF",
-        "isin": "IE00BYTRRH56",
-        "weight_in_block": 6.67,
-        "portfolio_pct": 1.32
+      "global_core": {
+        "name": "State Street SPDR MSCI ACWI IMI UCITS ETF (Acc)",
+        "isin": "IE00B3YLTY66",
+        "portfolio_pct": 10
       }
     },
-    "architecture_note": "IVY4 is the primary return/rotation engine; macro-defensive is a smaller strategic satellite; gold is fixed at 10%; cash is the regime-sensitive protection buffer."
+    "regime_sensitive_total_pct": 67.5,
+    "architecture_note": "Fixed strategic sleeve = 22.5% Real Assets (7.5% Gold, 10% Broad Commodities, 5% Global Mining) + 10% Global Core. Only the remaining 67.5% is regime-sensitive and is split between IVY4 and Strategic Cash. IVY Temporary Cash from SMA10 FAIL slots remains separate from Strategic Cash."
   },
   "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
   "operating_mode": "NORMAL MODE",
   "source_checks": {
     "SPY_return_overlap": {
       "pairs": 12,
-      "max_abs_return_diff": 0.0,
+      "max_abs_return_diff": 0,
       "tolerance": 0.0005
     },
     "VIX_source": "Cboe VIX Index daily history (official)",
     "VIX_overlap_gate": {
       "pairs": 20,
-      "max_abs_diff": 0.0,
+      "max_abs_diff": 0,
       "tolerance": 0.02,
       "last_overlap_date": "2026-10-01",
       "frozen_vix_last_true_observation": "2026-10-01",
