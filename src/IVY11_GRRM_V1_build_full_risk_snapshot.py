@@ -6,7 +6,9 @@ Combines:
 - canonical FAST DAILY runtime snapshot, and
 - last valid canonical BASE diagnostic snapshot
 
-into one management snapshot for Button 3 "Marktregime & Risikosteuerung".
+into one canonical management snapshot used by:
+- the daily market-regime/risk quick check, and
+- the monthly IVY4 update incl. market-regime/risk management.
 
 Safety / freshness rule
 -----------------------
@@ -26,6 +28,8 @@ FAST = HERE/"docs/latest_fast_snapshot.json"
 BASE = HERE/"data/IVY11_GRRM_V1-GX_BASE_Diagnostic_Anchor_2026-10-02.csv"
 OUT_JSON = HERE/"docs/latest_full_risk_snapshot.json"
 OUT_MD = HERE/"docs/latest_full_risk_snapshot.md"
+
+POLICY_VERSION = "V5.0"
 
 REGIMES = {
     1:"Kapitulation/Bodenbildung",
@@ -182,11 +186,14 @@ def main():
             "method_note":"Advisory diagnostic; phase uses regime, market/credit/volatility stress, 200D, drawdown and 5D/20D velocity. Not a backtest-validated automatic action rule.",
         },
         "strategic_policy_orientation":{
+            "policy_version":POLICY_VERSION,
             "policy_type":"USER_POLICY_DEFENSIVE_ORIENTATION_NOT_AUTOMATIC",
             "regime":regime,
-            **POLICY[regime],
+            "current_regime_policy":POLICY[regime],
+            "all_regime_policy":POLICY,
             "fixed_sleeve_total_pct":FIXED_SLEEVE_TOTAL,
             "fixed_sleeve":FIXED_SLEEVE,
+            "regime_sensitive_total_pct":67.5,
             "architecture_note":"Fixed strategic sleeve = 22.5% Real Assets (7.5% Gold, 10% Broad Commodities, 5% Global Mining) + 10% Global Core. Only the remaining 67.5% is regime-sensitive and is split between IVY4 and Strategic Cash. IVY Temporary Cash from SMA10 FAIL slots remains separate from Strategic Cash.",
         },
         "clean3f_vs_sentinel_70_75":fast["clean3f_vs_sentinel_70_75"],
@@ -237,7 +244,7 @@ def main():
 ## Crash-/Drawdown-Phase
 - Phase: **{phase_code} – {phase_name}**
 - Decision Status: **{phase_action}**
-- USER POLICY Soll-Allokation für R{regime}: **{POLICY[regime]['strategic_cash']:.1f} % Strategic Cash / {POLICY[regime]['ivy4_budget']:.1f} % IVY4 / 7.5 % Gold / 10.0 % Broad Commodities / 5.0 % Global Mining / 10.0 % Global Core**
+- USER POLICY V5.0 Soll-Allokation für R{regime}: **{POLICY[regime]['strategic_cash']:.1f} % Strategic Cash / {POLICY[regime]['ivy4_budget']:.1f} % IVY4 / 7.5 % Gold / 10.0 % Broad Commodities / 5.0 % Global Mining / 10.0 % Global Core**
 - Fixer strategischer Sockel: **32.5 %** = 22.5 % Real Assets + 10.0 % Global Core.
 - Regime-sensitiver Bereich: **67.5 %** = IVY4 + Strategic Cash.
 - Produkte: Gold **DE000EWG2LD7** / Broad Commodities **IE00BDFL4P12** / Global Mining **IE00BDFBTQ78** / Global Core **IE00B3YLTY66**.
