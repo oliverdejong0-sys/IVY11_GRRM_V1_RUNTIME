@@ -28,10 +28,12 @@
 ## Crash-/Drawdown-Phase
 - Phase: **NONE – Keine Crashphase**
 - Decision Status: **NO ACTION**
-- USER POLICY Soll-Allokation für R4: **40 % Cash / 30 % IVY4 / 20 % Makro-Defensiv / 10 % Gold**
-- Hinweis: USER POLICY / defensive Orientierung; keine automatische oder backtest-validierte Cash-Action.
-- Makro intern: **53,33 % Commodities / 13,33 % Mining / 13,33 % Health Care / 13,33 % Consumer Staples / 6,67 % Utilities**.
-- Portfolioanteile Makro aktuell: **10.67 % / 2.67 % / 2.67 % / 2.67 % / 1.32 %**.
+- USER POLICY V5.0 Soll-Allokation für R4: **20.0 % Strategic Cash / 47.5 % IVY4 / 7.5 % Gold / 10.0 % Broad Commodities / 5.0 % Global Mining / 10.0 % Global Core**
+- Fixer strategischer Sockel: **32.5 %** = 22.5 % Real Assets + 10.0 % Global Core.
+- Regime-sensitiver Bereich: **67.5 %** = IVY4 + Strategic Cash.
+- Produkte: Gold **DE000EWG2LD7** / Broad Commodities **IE00BDFL4P12** / Global Mining **IE00BDFBTQ78** / Global Core **IE00B3YLTY66**.
+- Wichtig: IVY Temporary Cash aus SMA10-FAIL-Slots ist zusätzliches Cash innerhalb des IVY4-Budgets und bleibt getrennt von Strategic Cash.
+- Hinweis: USER POLICY / defensive Orientierung; keine automatische reale Cashaktion, solange Action Authority SHADOW ist.
 
 ## Operating mode
 **NORMAL MODE**
