@@ -39,33 +39,45 @@ REGIMES = {
 
 
 POLICY = {
-    1:{"cash":20,"ivy4":40,"macro_defensive":30,"gold":10},
-    2:{"cash":5,"ivy4":65,"macro_defensive":20,"gold":10},
-    3:{"cash":5,"ivy4":70,"macro_defensive":15,"gold":10},
-    4:{"cash":40,"ivy4":30,"macro_defensive":20,"gold":10},
-    5:{"cash":55,"ivy4":20,"macro_defensive":15,"gold":10},
-    6:{"cash":65,"ivy4":15,"macro_defensive":10,"gold":10},
-    7:{"cash":45,"ivy4":25,"macro_defensive":20,"gold":10},
+    1:{"strategic_cash":20.0,"ivy4_budget":47.5},
+    2:{"strategic_cash":10.0,"ivy4_budget":57.5},
+    3:{"strategic_cash":0.0,"ivy4_budget":67.5},
+    4:{"strategic_cash":20.0,"ivy4_budget":47.5},
+    5:{"strategic_cash":35.0,"ivy4_budget":32.5},
+    6:{"strategic_cash":55.0,"ivy4_budget":12.5},
+    7:{"strategic_cash":45.0,"ivy4_budget":22.5},
 }
 
-MACRO_WEIGHTS = {
-    "commodities":{"name":"iShares Diversified Commodity Swap UCITS ETF – A2DK6R","isin":"IE00BDFL4P12","weight_in_block":53.33},
-    "global_mining":{"name":"VanEck S&P Global Mining UCITS ETF","isin":"IE00BDFBTQ78","weight_in_block":13.33},
-    "health_care":{"name":"SPDR MSCI World Health Care UCITS ETF","isin":"IE00BYTRRB94","weight_in_block":13.33},
-    "consumer_staples":{"name":"SPDR MSCI World Consumer Staples UCITS ETF","isin":"IE00BYTRR756","weight_in_block":13.33},
-    "utilities":{"name":"SPDR MSCI World Utilities UCITS ETF","isin":"IE00BYTRRH56","weight_in_block":6.67},
+FIXED_SLEEVE = {
+    "gold":{
+        "name":"EUWAX Gold II",
+        "isin":"DE000EWG2LD7",
+        "portfolio_pct":7.5,
+    },
+    "broad_commodities":{
+        "name":"iShares Diversified Commodity Swap UCITS ETF",
+        "isin":"IE00BDFL4P12",
+        "portfolio_pct":10.0,
+    },
+    "global_mining":{
+        "name":"VanEck S&P Global Mining UCITS ETF",
+        "isin":"IE00BDFBTQ78",
+        "portfolio_pct":5.0,
+    },
+    "global_core":{
+        "name":"State Street SPDR MSCI ACWI IMI UCITS ETF (Acc)",
+        "isin":"IE00B3YLTY66",
+        "portfolio_pct":10.0,
+    },
 }
 
-def macro_portfolio_breakdown(regime):
-    total=POLICY[regime]["macro_defensive"]
-    exact={
-        30:[16.00,4.00,4.00,4.00,2.00],
-        20:[10.67,2.67,2.67,2.67,1.32],
-        15:[8.00,2.00,2.00,2.00,1.00],
-        10:[5.33,1.33,1.33,1.33,0.68],
-    }[total]
-    keys=list(MACRO_WEIGHTS.keys())
-    return {k:{**MACRO_WEIGHTS[k],"portfolio_pct":exact[i]} for i,k in enumerate(keys)}
+FIXED_SLEEVE_TOTAL = sum(v["portfolio_pct"] for v in FIXED_SLEEVE.values())
+if abs(FIXED_SLEEVE_TOTAL - 32.5) > 1e-9:
+    raise RuntimeError("Fixed strategic sleeve must total 32.5%.")
+
+for _regime, _policy in POLICY.items():
+    if abs(_policy["strategic_cash"] + _policy["ivy4_budget"] + FIXED_SLEEVE_TOTAL - 100.0) > 1e-9:
+        raise RuntimeError(f"R{_regime} strategic allocation does not sum to 100%.")
 def classify_crash_phase(regime, values):
     """Advisory diagnostic only; not a backtest-validated trading rule."""
     dd=float(values["EQ_DRAWDOWN_PCT"])
@@ -173,8 +185,9 @@ def main():
             "policy_type":"USER_POLICY_DEFENSIVE_ORIENTATION_NOT_AUTOMATIC",
             "regime":regime,
             **POLICY[regime],
-            "macro_breakdown":macro_portfolio_breakdown(regime),
-            "architecture_note":"IVY4 is the primary return/rotation engine; macro-defensive is a smaller strategic satellite; gold is fixed at 10%; cash is the regime-sensitive protection buffer.",
+            "fixed_sleeve_total_pct":FIXED_SLEEVE_TOTAL,
+            "fixed_sleeve":FIXED_SLEEVE,
+            "architecture_note":"Fixed strategic sleeve = 22.5% Real Assets (7.5% Gold, 10% Broad Commodities, 5% Global Mining) + 10% Global Core. Only the remaining 67.5% is regime-sensitive and is split between IVY4 and Strategic Cash. IVY Temporary Cash from SMA10 FAIL slots remains separate from Strategic Cash.",
         },
         "clean3f_vs_sentinel_70_75":fast["clean3f_vs_sentinel_70_75"],
         "operating_mode":mode if base_valid_for_management else "FULL BASE REFRESH REQUIRED",
@@ -224,10 +237,12 @@ def main():
 ## Crash-/Drawdown-Phase
 - Phase: **{phase_code} – {phase_name}**
 - Decision Status: **{phase_action}**
-- USER POLICY Soll-Allokation für R{regime}: **{POLICY[regime]['cash']} % Cash / {POLICY[regime]['ivy4']} % IVY4 / {POLICY[regime]['macro_defensive']} % Makro-Defensiv / {POLICY[regime]['gold']} % Gold**
-- Hinweis: USER POLICY / defensive Orientierung; keine automatische oder backtest-validierte Cash-Action.
-- Makro intern: **53,33 % Commodities / 13,33 % Mining / 13,33 % Health Care / 13,33 % Consumer Staples / 6,67 % Utilities**.
-- Portfolioanteile Makro aktuell: **{macro_portfolio_breakdown(regime)['commodities']['portfolio_pct']:.2f} % / {macro_portfolio_breakdown(regime)['global_mining']['portfolio_pct']:.2f} % / {macro_portfolio_breakdown(regime)['health_care']['portfolio_pct']:.2f} % / {macro_portfolio_breakdown(regime)['consumer_staples']['portfolio_pct']:.2f} % / {macro_portfolio_breakdown(regime)['utilities']['portfolio_pct']:.2f} %**.
+- USER POLICY Soll-Allokation für R{regime}: **{POLICY[regime]['strategic_cash']:.1f} % Strategic Cash / {POLICY[regime]['ivy4_budget']:.1f} % IVY4 / 7.5 % Gold / 10.0 % Broad Commodities / 5.0 % Global Mining / 10.0 % Global Core**
+- Fixer strategischer Sockel: **32.5 %** = 22.5 % Real Assets + 10.0 % Global Core.
+- Regime-sensitiver Bereich: **67.5 %** = IVY4 + Strategic Cash.
+- Produkte: Gold **DE000EWG2LD7** / Broad Commodities **IE00BDFL4P12** / Global Mining **IE00BDFBTQ78** / Global Core **IE00B3YLTY66**.
+- Wichtig: IVY Temporary Cash aus SMA10-FAIL-Slots ist zusätzliches Cash innerhalb des IVY4-Budgets und bleibt getrennt von Strategic Cash.
+- Hinweis: USER POLICY / defensive Orientierung; keine automatische reale Cashaktion, solange Action Authority SHADOW ist.
 
 ## Operating mode
 **{result['operating_mode']}**
