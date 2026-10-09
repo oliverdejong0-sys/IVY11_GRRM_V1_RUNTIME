@@ -51,7 +51,7 @@ SCHEMA = "IVY11_GRRM_V1_FULL_RISK_V2"
 IMAGE_URL = (
     "https://raw.githubusercontent.com/oliverdejong0-sys/"
     "IVY11_GRRM_V1_RUNTIME/main/docs/"
-    "IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png?v=20261009-3"
+    "IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png"
 )
 
 REGIMES = {
@@ -188,6 +188,7 @@ def main():
 
     result = {
         "schema": SCHEMA,
+        "runtime_revision": "V6.3_CACHE_SAFE",
         "target_market_date": fast["target_market_date"],
         "generated_utc": fast["generated_utc"],
         "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
