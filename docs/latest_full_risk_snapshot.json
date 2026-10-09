@@ -60,7 +60,7 @@
     "note": "Diagnostic regime-stability score only; not a crash probability, not a market-timing rule and never used to set IVY/cash weights."
   },
   "assets": {
-    "boom_bust_image_url": "https://raw.githubusercontent.com/oliverdejong0-sys/IVY11_GRRM_V1_RUNTIME/main/docs/IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png"
+    "boom_bust_image_url": "https://raw.githubusercontent.com/oliverdejong0-sys/IVY11_GRRM_V1_RUNTIME/7d4c4d630f264e24f4288e2f913aefdb78ec5ca0/docs/IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png"
   },
   "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
   "operating_mode": "NORMAL MODE",
