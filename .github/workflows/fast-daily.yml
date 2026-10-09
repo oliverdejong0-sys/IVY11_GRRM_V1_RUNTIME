@@ -2,6 +2,11 @@ name: IVY11 GRRM Fast Daily Snapshot
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "src/IVY11_GRRM_V1_build_fast_snapshot.py"
+      - "src/IVY11_GRRM_V1_build_full_risk_snapshot.py"
+      - ".github/workflows/fast-daily.yml"
   schedule:
     - cron: "30 22 * * 1-5"
     - cron: "30 23 * * 1-5"
@@ -30,7 +35,7 @@ jobs:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python src/IVY11_GRRM_V1_build_fast_snapshot.py
 
-      - name: Build full-risk management snapshot
+      - name: Build full-risk diagnostic snapshot
         run: python src/IVY11_GRRM_V1_build_full_risk_snapshot.py
 
       - name: Commit snapshots if changed
