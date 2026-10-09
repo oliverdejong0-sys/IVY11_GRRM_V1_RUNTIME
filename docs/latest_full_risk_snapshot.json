@@ -1,7 +1,8 @@
 {
   "schema": "IVY11_GRRM_V1_FULL_RISK_V2",
+  "runtime_revision": "V6.3_CACHE_SAFE",
   "target_market_date": "2026-10-08",
-  "generated_utc": "2026-10-09T10:51:20+00:00",
+  "generated_utc": "2026-10-09T22:46:16+00:00",
   "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
@@ -21,8 +22,8 @@
   "fast_action": {
     "MSP_MARKET": 32.14879133851629,
     "MSP_VOL": 34.59799806264127,
-    "MSP_CREDIT_CONTROL": 14.447345517841601,
-    "CLEAN3F_VOTE_PCT": 0,
+    "MSP_CREDIT_CONTROL": 16.708365060372024,
+    "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
@@ -34,13 +35,13 @@
     "D200": "RISK ON",
     "MODE": "NORMAL MODE",
     "VIX_RAW": 15.41,
-    "BAA10Y_RAW": 1.46,
-    "AAA10Y_RAW": 0.98,
-    "BAA_DATE": "2026-10-07",
-    "AAA_DATE": "2026-10-07"
+    "BAA10Y_RAW": 1.48,
+    "AAA10Y_RAW": 1.03,
+    "BAA_DATE": "2026-10-08",
+    "AAA_DATE": "2026-10-08"
   },
   "risk_pressure": {
-    "score": 42.593181868053136,
+    "score": 43.04538577655922,
     "classification": "NORMAL",
     "month_end_reference": {
       "reference_date": "2026-09-30",
@@ -48,7 +49,7 @@
       "classification": "NORMAL",
       "vp_source": "HISTORICAL_ANCHOR_VP"
     },
-    "delta_vs_month_end": -2.009641830335788,
+    "delta_vs_month_end": -1.5574379218297025,
     "weights": {
       "BASE_VP": 0.45,
       "MSP_MARKET": 0.25,
@@ -67,13 +68,13 @@
   "source_checks": {
     "SPY_return_overlap": {
       "pairs": 12,
-      "max_abs_return_diff": 0,
+      "max_abs_return_diff": 0.0,
       "tolerance": 0.0005
     },
     "VIX_source": "Cboe VIX Index daily history (official)",
     "VIX_overlap_gate": {
       "pairs": 20,
-      "max_abs_diff": 0,
+      "max_abs_diff": 0.0,
       "tolerance": 0.02,
       "last_overlap_date": "2026-10-01",
       "frozen_vix_last_true_observation": "2026-10-01",
@@ -84,8 +85,7 @@
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
     "VIX_sha256": "b95171b3e5badd76c22593dbce8ddaaec823d5e08279a93f20ba4bd43545ef52",
-    "BAA_sha256": "0e47809256338e8a29ba9eb4368c4b410a232f3809af37bf4ca1e9a4c61dc049",
-    "AAA_sha256": "de7954edf7c80b65b390cc2694bfc0e707fae516af8b3c6d660195029f7c5955"
-  },
-  "runtime_revision": "V6.3_CACHE_SAFE"
+    "BAA_sha256": "32e0f442777373c4c17a064c463a68d9706bede16f16a1eae8746de1ce246fbd",
+    "AAA_sha256": "7d2e6cfc59d8126e0196653fb0b4d93173432347fab6bb749a9112c8a2ab7987"
+  }
 }

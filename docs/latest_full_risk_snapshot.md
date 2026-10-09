@@ -12,7 +12,7 @@
 
 ## Risikoindikatoren
 - MSP Market: **32.15**
-- MSP Credit: **14.45**
+- MSP Credit: **16.71**
 - MSP Volatility: **34.60**
 - Fast Sentinel 65/70: **NO ALERT**
 - CLEAN3F Vote: **0.0%**
@@ -23,14 +23,14 @@
 - 20D-Bewegung: **2.38%**
 
 ## Risk Pressure
-- aktuell: **42.6/100 – NORMAL**
+- aktuell: **43.0/100 – NORMAL**
 - letzter Monatsultimo: **44.6/100 (2026-09-30)**
-- Veränderung: **-2.0 Punkte**
+- Veränderung: **-1.6 Punkte**
 - Formel: **45% BASE VP + 25% MSP Market + 20% MSP Credit + 10% MSP Volatility**
 - Verwendung: **nur diagnostisch; keine Cash-/IVY-Steuerung**
 
 ## Boom-&-Bust-Grafik
-https://raw.githubusercontent.com/oliverdejong0-sys/IVY11_GRRM_V1_RUNTIME/main/docs/IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png?v=20261009-3
+https://raw.githubusercontent.com/oliverdejong0-sys/IVY11_GRRM_V1_RUNTIME/7d4c4d630f264e24f4288e2f913aefdb78ec5ca0/docs/IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png
 
 ## Operating mode
 **NORMAL MODE**
