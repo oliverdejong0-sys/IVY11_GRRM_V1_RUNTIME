@@ -2,15 +2,14 @@ name: IVY11 GRRM Fast Daily Snapshot
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "src/IVY11_GRRM_V1_build_fast_snapshot.py"
-      - "src/IVY11_GRRM_V1_build_full_risk_snapshot.py"
-      - ".github/workflows/fast-daily.yml"
   schedule:
     - cron: "30 22 * * 1-5"
     - cron: "30 23 * * 1-5"
     - cron: "30 0 * * 2-6"
+
+concurrency:
+  group: ivy11-grrm-runtime-snapshot
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -21,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,7 +47,16 @@ jobs:
           git add docs/latest_full_risk_snapshot.json docs/latest_full_risk_snapshot.md
           if git diff --cached --quiet; then
             echo "No snapshot change."
-          else
-            git commit -m "IVY11 GRRM runtime snapshots"
-            git push
+            exit 0
+          fi
+          git commit -m "IVY11 GRRM runtime snapshots"
+
+          # Remote may have advanced since checkout. Rebase our generated
+          # snapshot commit before pushing; retry once if a race still occurs.
+          git fetch origin main
+          git rebase origin/main
+          if ! git push origin HEAD:main; then
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
           fi
