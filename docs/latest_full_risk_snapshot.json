@@ -22,7 +22,7 @@
     "MSP_MARKET": 32.14879133851629,
     "MSP_VOL": 34.59799806264127,
     "MSP_CREDIT_CONTROL": 14.447345517841601,
-    "CLEAN3F_VOTE_PCT": 0.0,
+    "CLEAN3F_VOTE_PCT": 0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
@@ -60,20 +60,20 @@
     "note": "Diagnostic regime-stability score only; not a crash probability, not a market-timing rule and never used to set IVY/cash weights."
   },
   "assets": {
-    "boom_bust_image_url": "https://raw.githubusercontent.com/oliverdejong0-sys/IVY11_GRRM_V1_RUNTIME/main/docs/IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png?v=20261009-3"
+    "boom_bust_image_url": "https://raw.githubusercontent.com/oliverdejong0-sys/IVY11_GRRM_V1_RUNTIME/main/docs/IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png"
   },
   "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
   "operating_mode": "NORMAL MODE",
   "source_checks": {
     "SPY_return_overlap": {
       "pairs": 12,
-      "max_abs_return_diff": 0.0,
+      "max_abs_return_diff": 0,
       "tolerance": 0.0005
     },
     "VIX_source": "Cboe VIX Index daily history (official)",
     "VIX_overlap_gate": {
       "pairs": 20,
-      "max_abs_diff": 0.0,
+      "max_abs_diff": 0,
       "tolerance": 0.02,
       "last_overlap_date": "2026-10-01",
       "frozen_vix_last_true_observation": "2026-10-01",
@@ -86,5 +86,6 @@
     "VIX_sha256": "b95171b3e5badd76c22593dbce8ddaaec823d5e08279a93f20ba4bd43545ef52",
     "BAA_sha256": "0e47809256338e8a29ba9eb4368c4b410a232f3809af37bf4ca1e9a4c61dc049",
     "AAA_sha256": "de7954edf7c80b65b390cc2694bfc0e707fae516af8b3c6d660195029f7c5955"
-  }
+  },
+  "runtime_revision": "V6.3_CACHE_SAFE"
 }
