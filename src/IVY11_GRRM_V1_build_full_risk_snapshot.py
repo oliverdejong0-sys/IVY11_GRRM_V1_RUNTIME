@@ -50,7 +50,7 @@ OUT_MD = HERE / "docs/latest_full_risk_snapshot.md"
 SCHEMA = "IVY11_GRRM_V1_FULL_RISK_V2"
 IMAGE_URL = (
     "https://raw.githubusercontent.com/oliverdejong0-sys/"
-    "IVY11_GRRM_V1_RUNTIME/main/docs/"
+    "IVY11_GRRM_V1_RUNTIME/7d4c4d630f264e24f4288e2f913aefdb78ec5ca0/docs/"
     "IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png"
 )
 
