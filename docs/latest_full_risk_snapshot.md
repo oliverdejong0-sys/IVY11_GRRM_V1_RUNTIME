@@ -1,31 +1,31 @@
 # IVY11 – Markt-Regime-Diagnose Runtime Snapshot
 
-**Marktdatum Action Layer:** 2026-10-08  
+**Marktdatum Action Layer:** 2026-10-09  
 **BASE-Datenstand:** 2026-10-02  
 **BASE-Freshness:** VALID_STALE_WITHIN_CALM_POLICY  
 **Authority:** DIAGNOSTIC ONLY / keine Portfolio-Cashsteuerung
 
 ## BASE
-- Regime: **4/7 – Reifer Bullenmarkt (BASE-Datenstand 2026-10-02, 6 Kalendertage alt)**
+- Regime: **4/7 – Reifer Bullenmarkt (BASE-Datenstand 2026-10-02, 7 Kalendertage alt)**
 - VP: **62.68**
 - MSP: **31.33**
 
 ## Risikoindikatoren
-- MSP Market: **32.15**
+- MSP Market: **26.91**
 - MSP Credit: **16.71**
-- MSP Volatility: **34.60**
+- MSP Volatility: **30.89**
 - Fast Sentinel 65/70: **NO ALERT**
 - CLEAN3F Vote: **0.0%**
 - Sentinel 70/75: **NO STRESS**
-- 200D-Abstand: **7.44%**
-- Drawdown vom ATH: **-0.66%**
-- 5D-Bewegung: **1.30%**
-- 20D-Bewegung: **2.38%**
+- 200D-Abstand: **8.00%**
+- Drawdown vom ATH: **-0.07%**
+- 5D-Bewegung: **1.16%**
+- 20D-Bewegung: **2.12%**
 
 ## Risk Pressure
-- aktuell: **43.0/100 – NORMAL**
+- aktuell: **41.4/100 – NORMAL**
 - letzter Monatsultimo: **44.6/100 (2026-09-30)**
-- Veränderung: **-1.6 Punkte**
+- Veränderung: **-3.2 Punkte**
 - Formel: **45% BASE VP + 25% MSP Market + 20% MSP Credit + 10% MSP Volatility**
 - Verwendung: **nur diagnostisch; keine Cash-/IVY-Steuerung**
 
