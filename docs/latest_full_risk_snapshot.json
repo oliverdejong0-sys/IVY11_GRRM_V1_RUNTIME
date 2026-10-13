@@ -1,16 +1,16 @@
 {
   "schema": "IVY11_GRRM_V1_FULL_RISK_V2",
   "runtime_revision": "V6.3_CACHE_SAFE",
-  "target_market_date": "2026-10-09",
-  "generated_utc": "2026-10-13T00:58:51+00:00",
+  "target_market_date": "2026-10-12",
+  "generated_utc": "2026-10-13T22:56:58+00:00",
   "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
-    "base_staleness_calendar_days": 7,
+    "base_staleness_calendar_days": 10,
     "calm_mode_max_staleness_days": 7,
     "alert_or_stress_requires_same_date_base": true,
-    "status": "VALID_STALE_WITHIN_CALM_POLICY",
-    "base_valid_for_management": true
+    "status": "BASE_REFRESH_REQUIRED",
+    "base_valid_for_management": false
   },
   "base": {
     "REGIME": 4,
@@ -20,28 +20,28 @@
     "SOURCE_NOTE": "FROZEN_BASE_DIAGNOSTIC_ANCHOR_REFERENCE_ONLY"
   },
   "fast_action": {
-    "MSP_MARKET": 26.91241714061324,
-    "MSP_VOL": 30.89216530348687,
-    "MSP_CREDIT_CONTROL": 16.708365060372024,
+    "MSP_MARKET": 29.48327099340829,
+    "MSP_VOL": 33.406865382546,
+    "MSP_CREDIT_CONTROL": 14.172286273656733,
     "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
     "SENTINEL_70_75": "NO STRESS",
-    "EQ_MA200_GAP_PCT": 8.004583195472392,
-    "EQ_DRAWDOWN_PCT": -0.06674703992157749,
-    "EQ_RET_5D_PCT": 1.1602817558622247,
-    "EQ_RET_20D_PCT": 2.121364884414967,
+    "EQ_MA200_GAP_PCT": 7.8677713221067425,
+    "EQ_DRAWDOWN_PCT": -0.12707790311825562,
+    "EQ_RET_5D_PCT": 0.4220226919415593,
+    "EQ_RET_20D_PCT": 2.5171088486413584,
     "D200": "RISK ON",
     "MODE": "NORMAL MODE",
-    "VIX_RAW": 14.84,
-    "BAA10Y_RAW": 1.48,
-    "AAA10Y_RAW": 1.03,
-    "BAA_DATE": "2026-10-08",
-    "AAA_DATE": "2026-10-08"
+    "VIX_RAW": 15.21,
+    "BAA10Y_RAW": 1.45,
+    "AAA10Y_RAW": 0.98,
+    "BAA_DATE": "2026-10-09",
+    "AAA_DATE": "2026-10-09"
   },
   "risk_pressure": {
-    "score": 41.36570895116801,
+    "score": 41.75267666492964,
     "classification": "NORMAL",
     "month_end_reference": {
       "reference_date": "2026-09-30",
@@ -49,7 +49,7 @@
       "classification": "NORMAL",
       "vp_source": "HISTORICAL_ANCHOR_VP"
     },
-    "delta_vs_month_end": -3.2371147472209145,
+    "delta_vs_month_end": -2.8501470334592867,
     "weights": {
       "BASE_VP": 0.45,
       "MSP_MARKET": 0.25,
@@ -64,7 +64,7 @@
     "boom_bust_image_url": "https://raw.githubusercontent.com/oliverdejong0-sys/IVY11_GRRM_V1_RUNTIME/7d4c4d630f264e24f4288e2f913aefdb78ec5ca0/docs/IVY11_GRRM_V1-Boom_Bust_7_Regime_V6_FINAL.png"
   },
   "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
-  "operating_mode": "NORMAL MODE",
+  "operating_mode": "FULL BASE REFRESH REQUIRED",
   "source_checks": {
     "SPY_return_overlap": {
       "pairs": 12,
@@ -84,8 +84,8 @@
     "VIX_url": "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
-    "VIX_sha256": "51ea1e59bfeaf400f6816300c39145df5e3fb437e7c60bdb8ca2178f8c96f436",
-    "BAA_sha256": "17ee9fbea9131982445517e715638238714c070f2f955680f9ce2feb8a85ee07",
-    "AAA_sha256": "450c4a669ece5321183e36b4a7d17441a55a1af5b74720a69d51e8186805a39c"
+    "VIX_sha256": "965f14ae8d58079536b5491219b647e6385592be2c466e6ac849f6ace0bbe1f7",
+    "BAA_sha256": "32f0ec80291f56986f4425b75fb751b81dceab1a7ff4eb14d04a37db6e5fc528",
+    "AAA_sha256": "4a62d2643e7076ffab4fc087542c8b57016467291c719fbc873cbaf5494c3291"
   }
 }
