@@ -331,8 +331,11 @@ def capture_spy_forward(repo: Path, out: Path, *, fetcher=None,
         def fetcher(start,end):
             return yf.Ticker("SPY").history(start=start,end=end,auto_adjust=False,
                                             actions=True,raise_errors=True)
+    # The provider's end parameter is exclusive. Never request dates
+    # after the market target; they are not point-in-time evidence for it.
+    requested_end_exclusive=(target+dt.timedelta(days=1)).isoformat()
     data=fetcher((target-dt.timedelta(days=90)).isoformat(),
-                 (target+dt.timedelta(days=2)).isoformat())
+                 requested_end_exclusive)
     import pandas as pd
     require(isinstance(data,pd.DataFrame) and not data.empty,
             "SPY feed returned empty/invalid frame")
@@ -349,7 +352,12 @@ def capture_spy_forward(repo: Path, out: Path, *, fetcher=None,
             "SPY source lacks required completed target date")
     known=("Open","High","Low","Close","Adj Close","Volume","Dividends","Stock Splits")
     rows=[]
+    excluded_after_target=0
     for d,r in zip(dates,data.to_dict(orient="records")):
+        if day(d)>target:
+            # Defensive guard if a provider ignores the exclusive end date.
+            excluded_after_target+=1
+            continue
         q={"Date":d}
         for col in known:
             f=float(r[col]) if col in r else None
@@ -368,6 +376,9 @@ def capture_spy_forward(repo: Path, out: Path, *, fetcher=None,
         "start_date":rows[0]["Date"],
         "end_date":rows[-1]["Date"],
         "observations":len(rows),
+        "requested_end_exclusive":requested_end_exclusive,
+        "rows_after_target_excluded":excluded_after_target,
+        "provider_capture_not_historical_pit_vintage":True,
         "events_columns":["Dividends","Stock Splits"],
         "target_unadjusted_close":latest["Close"],
         "target_dividend_reported":latest["Dividends"],
@@ -613,6 +624,31 @@ def selftest(repo: Path) -> dict:
             check("SPY_prospective_capture_synthetic",lambda: require(
                   capture_spy_forward(repo,Path(td),fetcher=good,clock=clock)
                   ["qualified_for_base_release"] is False,"Never mark as release"))
+            # Regression from real 2026-10-19 GitHub artifact: provider may
+            # return an extra session beyond the target (2026-10-16).
+            next_day=sample.copy().iloc[[-1]]
+            next_day.index=pd.to_datetime(
+                [str(day(fast["target_market_date"])+dt.timedelta(days=1))])
+            extra=pd.concat([sample,next_day])
+            with tempfile.TemporaryDirectory() as clean_dir:
+                meta=capture_spy_forward(
+                    repo,Path(clean_dir),fetcher=lambda a,b:extra,clock=clock)
+                check("SPY_target_is_last_archived_day",lambda: require(
+                    meta["end_date"]==fast["target_market_date"] and
+                    meta["rows_after_target_excluded"]==1,
+                    "Provider extra session leaked into as-of archive"))
+            checked_end=[]
+            def track_end(a,b):
+                checked_end.append(b)
+                return sample
+            with tempfile.TemporaryDirectory() as req_dir:
+                capture_spy_forward(repo,Path(req_dir),
+                                    fetcher=track_end,clock=clock)
+                check("SPY_provider_end_exclusive_target_plus_one",
+                      lambda: require(
+                          checked_end==[(day(fast["target_market_date"])+
+                                        dt.timedelta(days=1)).isoformat()],
+                          "Provider requested data beyond target"))
             broken=sample.drop(columns=["Dividends"])
             must_fail("SPY_requires_dividends",lambda: capture_spy_forward(
                 repo,Path(td),fetcher=lambda a,b:broken,clock=clock))
