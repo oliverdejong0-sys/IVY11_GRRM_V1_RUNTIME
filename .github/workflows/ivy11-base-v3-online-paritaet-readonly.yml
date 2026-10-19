@@ -1,0 +1,144 @@
+name: IVY11 BASE - V3 Online-Paritaet (READ ONLY)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ivy11-base-full-source-parity-read-only
+  cancel-in-progress: false
+
+jobs:
+  base-source-parity-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - name: Checkout source revision (no writing)
+        uses: actions/checkout@v4
+
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify audited research bundle SHA256
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "6902ecd60f3e4e4435a9d2c0f2e7e9fe3cc6c292d2db0930a38f90bf2a330fd4  base-parity-research-bundle.zip" | sha256sum -c -
+          python - <<'PY'
+          import zipfile
+          p="base-parity-research-bundle.zip"
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              names=set(z.namelist())
+              for req in (
+                  "base_diagnostic/IVY11_BASE_Online_Abnahme.py",
+                  "base_diagnostic/TEST_Canonical_Historical_Replay.py",
+                  "base_diagnostic/TEST_Online_Safety_Offline.py",
+                  "base_diagnostic/original_pruefdateien/HG_original.csv",
+                  "base_diagnostic/original_pruefdateien/HI_original.py",
+              ):
+                  assert req in names, f"Missing audited file: {req}"
+          PY
+
+      - name: Extract research bundle (no repository commit)
+        shell: bash
+        run: |
+          mkdir -p base_parity_research base_parity_audit
+          unzip -q base-parity-research-bundle.zip -d base_parity_research
+          echo "RESEARCH ONLY — reconstructed kernel/seed, no production authority."
+
+      - name: Install audited research dependencies
+        run: python -m pip install "numpy>=1.26,<3" "pandas>=2.2,<3" "requests>=2.32,<3" "yfinance>=0.2.54,<1" "openpyxl>=3.1,<4" "xlrd>=2.0,<3"
+
+      - name: Unit safety and historical replay (hard gate)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python base_parity_research/base_diagnostic/TEST_Online_Safety_Offline.py 2>&1 | tee base_parity_audit/UNIT_TESTS.log
+          python base_parity_research/base_diagnostic/TEST_Canonical_Historical_Replay.py | tee base_parity_audit/offline_replay_stdout.txt
+
+      - name: Use exact published FAST target and preserve input evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,shutil,hashlib,datetime as dt
+          from pathlib import Path
+          p=Path("docs/latest_fast_snapshot.json")
+          obj=json.loads(p.read_text(encoding="utf-8"))
+          assert obj.get("schema")=="IVY11_GRRM_V1_FAST_DAILY_V1", "FAST schema changed"
+          day=dt.date.fromisoformat(obj["target_market_date"])
+          lag=(dt.datetime.now(dt.timezone.utc).date()-day).days
+          assert 0<=lag<=5, f"FAST target {day} stale/future by {lag} calendar days"
+          out=Path("base_parity_audit")
+          out.mkdir(exist_ok=True)
+          shutil.copy2(p,out/"fast_reference.json")
+          (out/"RESEARCH_SOURCE.txt").write_text(
+              "Git commit: " + __import__("os").environ.get("GITHUB_SHA","LOCAL") + "\n"
+              "FAST target: "+str(day)+"\n"
+              "Bundle SHA256: 6902ecd60f3e4e4435a9d2c0f2e7e9fe3cc6c292d2db0930a38f90bf2a330fd4\n"
+              "No repository data or snapshot is modified.\n",
+              encoding="utf-8"
+          )
+          print("FAST target:",day,"freshness:",lag,"calendar days")
+          PY
+
+      - name: Complete official source history and BASE parity (candidate only)
+        id: online
+        shell: bash
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          set +e
+          TARGET="$(python -c 'import json;print(json.load(open("base_parity_audit/fast_reference.json"))["target_market_date"])')"
+          python base_parity_research/base_diagnostic/IVY11_BASE_Online_Abnahme.py \
+            --bundle-dir base_parity_research/base_diagnostic/original_pruefdateien \
+            --output-dir base_parity_audit \
+            --target-date "$TARGET" \
+            --fast-json base_parity_audit/fast_reference.json
+          result=$?
+          echo "exit_code=$result" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Hash evidence files for reproducibility
+        if: always()
+        shell: bash
+        run: |
+          if [ -d base_parity_audit ]; then
+            cd base_parity_audit
+            find . -type f ! -name "SHA256SUMS.txt" -print0 | sort -z | xargs -0 -r sha256sum > SHA256SUMS.txt
+          fi
+
+      - name: Upload audit artifacts, also on FAILED parity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVY11_BASE_V3_VOLLSTAENDIGE_ONLINE_ABNAHME
+          path: base_parity_audit/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Final gate - NO false PASS or publication
+        shell: bash
+        env:
+          ONLINE_EXIT: ${{ steps.online.outputs.exit_code }}
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path("base_parity_audit/ONLINE_ABNAHME_STATUS.json")
+          if not p.exists():
+              raise SystemExit("NO-GO: No online audit status; fetch artifact for logs.")
+          x=json.loads(p.read_text())
+          if os.environ.get("ONLINE_EXIT")!="0":
+              raise SystemExit("NO-GO: Source/history parity or candidate computation failed.")
+          if x.get("online_parity")!="PASS" or x.get("release")!="RESEARCH_CANDIDATE_READY_REVIEW_REQUIRED":
+              raise SystemExit("NO-GO: Candidate gate did not pass.")
+          if x.get("production_state_mutated") is not False or x.get("github_modified") is not False:
+              raise SystemExit("NO-GO: Unsafe mutation markers.")
+          print("RESEARCH CANDIDATE ONLY: all tests passed. MANUAL REVIEW REQUIRED. NO PRODUCTION PUBLISH.")
+          PY
