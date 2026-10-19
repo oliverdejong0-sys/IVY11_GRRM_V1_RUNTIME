@@ -1,0 +1,153 @@
+name: IVY11 BASE - Drei Quellen Diagnose (READ ONLY)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-three-original-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install minimal dependency
+        run: python -m pip install requests==2.32.5
+      - name: Inspect FRED SAHMREALTIME and BIS schema (read only)
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv, io, json, hashlib, os, re, requests
+          from datetime import datetime, timezone, date
+          from pathlib import Path
+          R={"schema":"IVY11_BASE_THREE_SOURCE_DIAGNOSIS_V1",
+             "generated_utc":datetime.now(timezone.utc).isoformat(),
+             "read_only":True,"production_refresh":"NOT_PERFORMED",
+             "historical_parity":"NOT_TESTED","sources":[]}
+          session=requests.Session()
+          session.headers.update({"User-Agent":"IVY11 BASE source diagnostic research read only"})
+          def meta(raw):
+              return {"bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest()}
+          def diag_fred():
+              d={"source":"FRED_SAHMREALTIME","test":"full_history","status":"UNKNOWN"}
+              key=os.environ.get("FRED_API_KEY","")
+              if not re.fullmatch("[a-z0-9]{32}",key):
+                  d.update(status="FAIL",issue="FRED_API_KEY_missing_or_invalid")
+                  return d
+              try:
+                  resp=session.get("https://api.stlouisfed.org/fred/series/observations",
+                      params={"series_id":"SAHMREALTIME","file_type":"json",
+                              "api_key":key,"limit":100000,"sort_order":"asc"},
+                      timeout=(8,40))
+                  d["http_status"]=resp.status_code
+                  d["content_type"]=resp.headers.get("Content-Type","")[:100]
+                  d["raw"]=meta(resp.content)
+                  try:
+                      body=resp.json()
+                  except ValueError:
+                      d.update(status="FAIL",issue="response_not_json")
+                      return d
+                  d["json_fields"]=sorted(body.keys())[:25]
+                  if resp.status_code!=200:
+                      d.update(status="FAIL",issue="http_error_response")
+                      return d
+                  observations=body.get("observations")
+                  if not isinstance(observations,list):
+                      d.update(status="FAIL",issue="no_observations_array")
+                      return d
+                  d["count_field"]=body.get("count")
+                  d["observations"]=len(observations)
+                  d["non_missing"]=sum(1 for r in observations
+                      if r.get("value") not in (None,"","."))
+                  dates=[str(r.get("date","")) for r in observations if r.get("date")]
+                  d["first_date"]=min(dates) if dates else None
+                  d["last_date"]=max(dates) if dates else None
+                  count=body.get("count",len(observations))
+                  if len(observations)!=int(count):
+                      d.update(status="FAIL",issue="pagination_or_count_mismatch")
+                  elif d["non_missing"]<100:
+                      d.update(status="FAIL",issue="less_than_100_valid_months")
+                  elif d["last_date"] is None or (datetime.now(timezone.utc).date()-date.fromisoformat(d["last_date"])).days>100:
+                      d.update(status="FAIL",issue="series_ends_before_anchor")
+                  else:
+                      d.update(status="PASS_TRANSPORT_AND_COVERAGE",
+                               issue="Not a historical source-parity proof")
+              except Exception as e:
+                  # Do not log exception messages: requests errors may contain API key in URL.
+                  d.update(status="FAIL",issue="request_or_parse_exception",
+                           exception_type=type(e).__name__)
+              return d
+          def bis_diagnostic(flow,key):
+              d={"source":"BIS_"+flow,"key":key,"formats":[]}
+              endpoint=f"https://stats.bis.org/api/v2/data/dataflow/BIS/{flow}/1.0/{key}"
+              for fmt in ("csvfile","sdmx-csv-1.0.0"):
+                  x={"requested_format":fmt}
+                  try:
+                      resp=session.get(endpoint,params={"format":fmt},timeout=(8,45),
+                              headers={"Accept":"text/csv"})
+                      x["http_status"]=resp.status_code
+                      x["content_type"]=resp.headers.get("Content-Type","")[:100]
+                      x["raw"]=meta(resp.content)
+                      if resp.status_code!=200:
+                          x["issue"]="http_error"
+                      elif len(resp.content)>20_000_000:
+                          x["issue"]="content_oversize"
+                      else:
+                          text=resp.content.decode("utf-8-sig",errors="replace")
+                          reader=csv.DictReader(io.StringIO(text))
+                          x["columns"]=reader.fieldnames[:50] if reader.fieldnames else []
+                          x["has_time_period"]="TIME_PERIOD" in x["columns"]
+                          x["has_obs_value"]="OBS_VALUE" in x["columns"]
+                          x["rows"]=0
+                          x["non_missing_values"]=0
+                          x["key_column_present"]=False
+                          x["exact_key_matches"]=0
+                          x["period_first"]=None
+                          x["period_last"]=None
+                          for row in reader:
+                              x["rows"]+=1
+                              if x["rows"]>250000:
+                                  x["issue"]="row_limit_exceeded"
+                                  break
+                              if str(row.get("OBS_VALUE","")).strip() not in ("",".","None"):
+                                  x["non_missing_values"]+=1
+                              for col in ("KEY","SERIES_KEY","SERIES","TIME_SERIES_KEY"):
+                                  if col in row:
+                                      x["key_column_present"]=True
+                                      if str(row[col]).strip()==key:
+                                          x["exact_key_matches"]+=1
+                              v=row.get("TIME_PERIOD")
+                              if v:
+                                  x["period_first"]=v if x["period_first"] is None else min(x["period_first"],v)
+                                  x["period_last"]=v if x["period_last"] is None else max(x["period_last"],v)
+                          x["issue"]=x.get("issue","diagnostic_only_not_parity")
+                  except Exception as e:
+                      x["issue"]="request_or_csv_parse_exception"
+                      x["exception_type"]=type(e).__name__
+                  d["formats"].append(x)
+              return d
+          R["sources"].append(diag_fred())
+          R["sources"].append(bis_diagnostic("WS_CREDIT_GAP","Q.US.P.A.C"))
+          R["sources"].append(bis_diagnostic("WS_DSR","Q.US.P"))
+          Path("IVY11_BASE_DREI_QUELLEN_DIAGNOSE.json").write_text(
+              json.dumps(R,ensure_ascii=False,indent=2),encoding="utf-8")
+          print("Diagnose abgeschlossen. JSON im Artifact. Keine produktiven Aenderungen.")
+          print("SAHMREALTIME:",R["sources"][0]["status"],
+                R["sources"][0].get("issue",""))
+          for item in R["sources"][1:]:
+              print(item["source"],[(i["requested_format"],i.get("http_status"),i.get("issue"))
+                                    for i in item["formats"]])
+          PY
+      - name: Upload safe source diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVY11_BASE_DREI_QUELLEN_DIAGNOSE
+          path: IVY11_BASE_DREI_QUELLEN_DIAGNOSE.json
+          if-no-files-found: error
