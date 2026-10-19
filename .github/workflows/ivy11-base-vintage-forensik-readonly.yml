@@ -1,0 +1,283 @@
+name: IVY11 BASE - Historische Datenvintages (READ ONLY)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ivy11-base-vintage-forensik-readonly
+  cancel-in-progress: false
+
+jobs:
+  archival-vintage-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+    steps:
+      - name: Checkout without repository writes
+        uses: actions/checkout@v4
+
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install official transport and numeric audit dependencies
+        run: python -m pip -q install requests pandas numpy
+
+      - name: Verify audited input bundle and source snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "8a11d225af945913b93e7d094d09525b989c41858907e83072e0234a0e7ec324  base-parity-research-bundle.zip" | sha256sum -c -
+          test -s docs/latest_fast_snapshot.json
+
+      - name: Historical ALFRED vintage audit (candidate forbidden)
+        shell: bash
+        run: |
+          mkdir -p vintage_evidence
+          cat > /tmp/ivy11_base_vintage_probe.py <<'IVY11_PY'
+          #!/usr/bin/env python3
+          """IVY11 BASE official ALFRED vintage reconstruction; READ ONLY, research evidence.
+          
+          Only FRED API with explicit realtime_start==realtime_end is accepted.
+          This script NEVER edits the frozen anchor, model state, or published runtime.
+          No API key nor request URL is logged or saved.
+          """
+          import argparse
+          import datetime as dt
+          import hashlib
+          import io
+          import json
+          import os
+          from pathlib import Path
+          import zipfile
+          import numpy as np
+          import pandas as pd
+          import requests
+          
+          ANCHOR="2026-10-02"
+          LAST_TRUE_VIX="2026-10-01"
+          BUNDLE_SHA="8a11d225af945913b93e7d094d09525b989c41858907e83072e0234a0e7ec324"
+          HG_SHA="134181241cde1ccd3cff048b95b51c7e1bb1ca6b5c5b042ca44b986c41b44a43"
+          GQ_SHA="72aebc10aee433221cb07fdd9a91229aa1d0eb27579c1756dff9c5ef4f1526de"
+          API="https://api.stlouisfed.org/fred/series/observations"
+          
+          def sha(b):
+              return hashlib.sha256(b).hexdigest()
+          
+          def verified_bundle(path):
+              content=Path(path).read_bytes()
+              if sha(content)!=BUNDLE_SHA:
+                  raise ValueError("The research bundle is not the exact audited SHA256 build.")
+              with zipfile.ZipFile(io.BytesIO(content)) as z:
+                  hg=z.read("base_diagnostic/original_pruefdateien/HG_original.csv")
+                  gq=z.read("base_diagnostic/original_pruefdateien/GQ_original.csv")
+              if sha(hg)!=HG_SHA or sha(gq)!=GQ_SHA:
+                  raise ValueError("Frozen historical anchors failed SHA256 validation.")
+              return pd.read_csv(io.BytesIO(hg)),pd.read_csv(io.BytesIO(gq))
+          
+          def api_series(session,api_key,series,asof):
+              """Get full official FRED/ALFRED history visible as-of a single day."""
+              date=dt.date.fromisoformat(asof)
+              params={"series_id":series,"api_key":api_key,"file_type":"json",
+                      "realtime_start":asof,"realtime_end":asof,
+                      "observation_start":"1776-07-04",
+                      "observation_end":asof,"limit":100000,"sort_order":"asc"}
+              try:
+                  response=session.get(API,params=params,timeout=(10,40),
+                                       headers={"Accept":"application/json","User-Agent":"IVY11-BASE-vintage-audit"})
+                  response.raise_for_status()
+                  data=response.json()
+              except Exception as exc:
+                  # NEVER expose the API key via requests' exception messages / URL.
+                  raise RuntimeError(f"{series}: official vintage transport failed ({type(exc).__name__})") from None
+              if data.get("realtime_start")!=asof or data.get("realtime_end")!=asof:
+                  raise ValueError(f"{series}: FRED did not confirm requested as-of {asof}")
+              n=int(data.get("count",0))
+              obs=data.get("observations",[])
+              if n>100000 or len(obs)!=n or not obs:
+                  raise ValueError(f"{series}: truncated or missing source observations")
+              frame=pd.DataFrame([{"Date":o.get("date"),"value":o.get("value"),
+                                  "realtime_start":o.get("realtime_start"),
+                                  "realtime_end":o.get("realtime_end")} for o in obs])
+              frame["Date"]=pd.to_datetime(frame["Date"],errors="coerce")
+              frame["value"]=pd.to_numeric(frame["value"],errors="coerce")
+              frame=frame.dropna(subset=["Date","value"]).sort_values("Date")
+              if frame.empty or frame.Date.duplicated().any() or frame.Date.max()>pd.Timestamp(date):
+                  raise ValueError(f"{series}: no clean unique dated numeric observations")
+              minrows={"NFCI":1000,"VIXCLS":1000,"BAA10Y":1000,"AAA10Y":1000}[series]
+              if len(frame)<minrows:
+                  raise ValueError(f"{series}: insufficient historical coverage ({len(frame)})")
+              return frame,sha(response.content)
+          
+          def next_wednesday_after_week(d):
+              d=pd.Timestamp(d)
+              x=d+pd.Timedelta(days=1)
+              return x+pd.Timedelta(days=(2-x.weekday())%7)
+          
+          def nfci_asof_score(frame,anchor=ANCHOR):
+              """EXACT original HI NFCI availability and expanding percentilerank semantics."""
+              target=pd.Timestamp(anchor)
+              v=frame[["Date","value"]].copy()
+              v["available_date"]=v["Date"].map(next_wednesday_after_week)
+              v=v[v.available_date<=target].sort_values("available_date")
+              if v.empty: raise ValueError("No eligible NFCI observation by frozen target")
+              calendar=pd.DataFrame({"Date":pd.bdate_range(v.available_date.min().normalize(),target)})
+              merged=pd.merge_asof(calendar,v[["available_date","value"]],
+                                   left_on="Date",right_on="available_date",direction="backward")
+              series=pd.to_numeric(merged.value,errors="coerce").dropna()
+              x=float(series.iloc[-1])
+              score=float(100*(np.sum(series.to_numpy()<=x)-0.5)/len(series))
+              return {"available_raw_value":x,"normalized_score":score,
+                      "effective_sample_size":len(series),
+                      "latest_observation":v.iloc[-1].Date.strftime("%Y-%m-%d"),
+                      "latest_availability":v.iloc[-1].available_date.strftime("%Y-%m-%d")}
+          
+          def percentilerank_at(df,series,target):
+              x=df.loc[(df.Date<=pd.Timestamp(target)) & (df.Date>=pd.Timestamp("1990-01-01")),
+                       "value"].to_numpy(float)
+              if not len(x):raise ValueError("Missing 1990-based FRED observations")
+              return float(100*(np.sum(x<=x[-1])-0.5)/len(x))
+          
+          def diagnose(session,api_key,bundle,fast_path,out_dir,extra_vintages=None):
+              out=Path(out_dir);out.mkdir(parents=True,exist_ok=True)
+              hg,gq=verified_bundle(bundle)
+              if hg.Date.iloc[-1]!=ANCHOR or gq.Date.iloc[-1]!=ANCHOR:
+                  raise ValueError("Frozen anchors end on unexpected date")
+              fast=json.loads(Path(fast_path).read_text())
+              checks=fast.get("source_checks",{})
+              if fast.get("schema")!="IVY11_GRRM_V1_FAST_DAILY_V1":
+                  raise ValueError("Wrong FAST schema")
+              if (checks.get("VIX_overlap_gate",{}).get("excluded_carried_state_date")!=ANCHOR
+                  or checks.get("VIX_overlap_gate",{}).get("frozen_vix_last_true_observation")!=LAST_TRUE_VIX):
+                  raise ValueError("FAST anchor metadata does not establish known VIX carry boundary")
+              versions=[ANCHOR,"2026-10-07","2026-10-14",dt.datetime.now(dt.timezone.utc).date().isoformat()]
+              if extra_vintages is not None: versions=extra_vintages
+              versions=list(dict.fromkeys(versions))
+              anchorrow=hg.iloc[-1]
+              audit={"script":"IVY11_BASE_ALFRED_VINTAGE_PROBE_READ_ONLY",
+                     "source":"FRED_API_EXPICIT_AS_OF",
+                     "generated_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
+                     "research_only":True,
+                     "production_release":"NO_GO",
+                     "historical_frozen_untouched":True,
+                     "bundle_sha256":BUNDLE_SHA,"frozen_hg_sha256":HG_SHA,
+                     "fast_sha256":sha(Path(fast_path).read_bytes()),
+                     "frozen_date":ANCHOR,"target_fast_date":fast["target_market_date"],
+                     "reference_nfci":{"raw":float(anchorrow.NFCI),
+                                       "normalized":float(anchorrow.N_NFCI)},
+                     "vintage_results":[],"requests":[],
+                     "vintage_nfci_gate":"NOT_EVALUATED",
+                     "fast_credit_gate":"NOT_EVALUATED",
+                     "vix_boundary_gate":"PASS_DOCUMENTED_CARRIED_DATE"}
+              # Every vintage is retained as an independently hashed CSV.
+              results={}
+              try:
+                  for asof in versions:
+                      if dt.date.fromisoformat(asof)>dt.datetime.now(dt.timezone.utc).date():
+                          raise ValueError("Requested future FRED vintage")
+                      frame,digest=api_series(session,api_key,"NFCI",asof)
+                      nfci=nfci_asof_score(frame,ANCHOR)
+                      nfci["vintage"]=asof
+                      nfci["provider_response_sha256"]=digest
+                      nfci["observations"]=len(frame)
+                      fn=out/f"ALFRED_NFCI_ASOF_{asof}.csv"
+                      frame.to_csv(fn,index=False)
+                      nfci["normalized_csv_sha256"]=sha(fn.read_bytes())
+                      nfci["frozen_raw_diff"]=nfci["available_raw_value"]-float(anchorrow.NFCI)
+                      nfci["frozen_score_diff"]=nfci["normalized_score"]-float(anchorrow.N_NFCI)
+                      audit["vintage_results"].append(nfci)
+                      results[asof]=frame
+                  f=audit["vintage_results"][0]
+                  if f["vintage"]!=ANCHOR: raise AssertionError("Anchor-first order changed")
+                  audit["vintage_nfci_gate"]="MATCH_FROZEN_WITHIN_ORIGINAL_1_POINT_TOLERANCE" if abs(f["frozen_score_diff"])<=1 else "FAIL_FROZEN_VINTAGE_DOES_NOT_MATCH"
+                  if len(versions)>1:
+                      first=results[ANCHOR].set_index("Date").value
+                      last=results[versions[-1]].set_index("Date").value
+                      shared=first.index.intersection(last.index)
+                      change=(last.loc[shared]-first.loc[shared]).abs()
+                      audit["revision_history"]={
+                          "compared_observations":len(shared),
+                          "raw_revised_count":int((change>1e-10).sum()),
+                          "raw_max_abs_revision":float(change.max()),
+                          "raw_same_count":int((change<=1e-10).sum()),
+                          "revision_since_anchor_provenance": "FRED/ALFRED explicit vintages"
+                      }
+                  target=fast["target_market_date"]
+                  credits=[]
+                  for sid in ["BAA10Y","AAA10Y"]:
+                      # Source vintage as of publication date; no use of later revisions to justify earlier FAST outputs.
+                      published_day=pd.Timestamp(fast.get("generated_utc")).date().isoformat()
+                      if dt.date.fromisoformat(published_day)>dt.datetime.now(dt.timezone.utc).date():
+                          raise ValueError("Published FAST generation date is future relative to audit")
+                      df,digest=api_series(session,api_key,sid,published_day)
+                      score=percentilerank_at(df,sid,target)
+                      credits.append(score)
+                      audit["requests"].append({"series":sid,"asof":published_day,"provider_response_sha256":digest,
+                                               "score_1990":score})
+                  actual=float(np.mean(credits))
+                  ref=float(fast["values"]["MSP_CREDIT_CONTROL"])
+                  audit["fast_credit_1990_window"]={"computed":actual,"published":ref,"diff":actual-ref,
+                                                   "threshold":0.30}
+                  audit["fast_credit_gate"]="MATCH" if abs(actual-ref)<=0.30 else "FAIL"
+                  # Frozen carry boundary; the archive may have the true VIX close but cannot invalidate prior-known state.
+                  if (abs(float(gq.loc[gq.Date==ANCHOR,"VIX"].iloc[0])-
+                          float(gq.loc[gq.Date==LAST_TRUE_VIX,"VIX"].iloc[0]))>1e-12):
+                      raise ValueError("VIX frozen carried close does not match last true observation")
+                  # ALWAYS research-only, even if all forensic sub-gates are green.
+                  audit["investigation"]="COMPLETE_RESEARCH_ONLY"
+              except Exception as exc:
+                  # Never log raw errors from HTTP.
+                  audit["investigation"]="INCOMPLETE"
+                  audit["error_type"]=type(exc).__name__
+                  if isinstance(exc,ValueError):audit["error_summary"]=str(exc)[:240]
+              finally:
+                  (out/"ALFRED_VINTAGE_AUDIT.json").write_text(json.dumps(audit,indent=2,ensure_ascii=False,default=str),encoding="utf-8")
+                  if audit["vintage_results"]:
+                      pd.DataFrame(audit["vintage_results"]).to_csv(out/"ALFRED_VINTAGE_VERGLEICH.csv",index=False)
+              return audit
+          
+          def main():
+              p=argparse.ArgumentParser()
+              p.add_argument("--bundle",type=Path,required=True)
+              p.add_argument("--fast",type=Path,required=True)
+              p.add_argument("--out-dir",type=Path,required=True)
+              args=p.parse_args()
+              key=os.environ.get("FRED_API_KEY","").strip()
+              if not key:
+                  args.out_dir.mkdir(parents=True,exist_ok=True)
+                  (args.out_dir/"MISSING_FRED_KEY.txt").write_text("FRED_API_KEY not configured; no query attempted.")
+                  raise SystemExit("No FRED_API_KEY in GitHub Actions secrets.")
+              result=diagnose(requests.Session(),key,args.bundle,args.fast,args.out_dir)
+              print(json.dumps({"investigation":result["investigation"],
+                                "nfci_frozen_vintage":result["vintage_nfci_gate"],
+                                "credit_1990":result["fast_credit_gate"],
+                                "production_release":result["production_release"]},indent=2))
+              if result["investigation"]!="COMPLETE_RESEARCH_ONLY":
+                  raise SystemExit(2)
+          
+          if __name__=="__main__":
+              main()
+          IVY11_PY
+          python /tmp/ivy11_base_vintage_probe.py \
+            --bundle base-parity-research-bundle.zip \
+            --fast docs/latest_fast_snapshot.json \
+            --out-dir vintage_evidence
+
+      - name: Upload all evidence, even if the vintage audit fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVY11_BASE_ALFRED_VINTAGE_BEWEISE
+          path: vintage_evidence/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Do not publish or mutate BASE (explicit gate)
+        if: always()
+        run: |
+          echo 'RESEARCH ONLY. No commit, no base state update, no runtime snapshot update.'
