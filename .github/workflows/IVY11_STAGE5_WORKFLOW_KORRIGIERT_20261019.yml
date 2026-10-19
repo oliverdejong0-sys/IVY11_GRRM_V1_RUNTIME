@@ -1,0 +1,136 @@
+name: IVY11 BASE - Stage 5 Official SPY Gate (READ ONLY)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 05:30 UTC Tue-Sat, after FAST and Stage-4 evidence snapshots.
+    - cron: "30 5 * * 2-6"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ivy11-base-stage5-source-truth
+  cancel-in-progress: false
+
+jobs:
+  stage5-shadow-source-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout read only, no persistent token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned runtime dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install "requests==2.32.5"
+          # Shiller's official ie_data.xls is legacy XLS: pandas requires xlrd.
+          # Openpyxl is kept for modern XLSX workbook dependencies.
+          python -m pip install "xlrd==2.0.1" "openpyxl==3.1.5"
+          python -c "import xlrd, openpyxl; print('Excel readers OK:', xlrd.__version__, openpyxl.__version__)"
+      - name: Compile Stage 5 and Stage 4 sources
+        run: |
+          python -m py_compile src/IVY11_BASE_stage5_official_dividends_gate.py
+          python -m py_compile src/IVY11_BASE_release_bridge.py
+      - name: Stage 4 runtime audit, strictly NO_GO
+        id: bridge
+        run: |
+          python src/IVY11_BASE_release_bridge.py audit \
+            --repo . --out shadow_release_bridge
+      - name: Audit GPT FULL runtime contract and distinguish stale BASE
+        id: gpt_runtime
+        run: |
+          python src/IVY11_BASE_stage5_official_dividends_gate.py \
+            --runtime-json docs/latest_full_risk_snapshot.json \
+            --out shadow_gpt_runtime
+      - name: Capture actual provider SPY data
+        id: spy
+        run: |
+          python src/IVY11_BASE_release_bridge.py capture-spy \
+            --repo . --out shadow_spy
+      - name: Capture original State Street SPY distribution XLSX
+        id: ssga
+        run: |
+          python src/IVY11_BASE_release_bridge.py capture-ssga \
+            --repo . --out shadow_ssga
+      - name: Capture official FRED, BIS, Shiller evidence
+        id: macro
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          python src/IVY11_BASE_daily_readiness.py \
+            --repo . --out shadow_macro
+      - name: Independent Stage-5 cross-source audit and cutoff gates
+        id: stage5
+        if: always()
+        run: |
+          python src/IVY11_BASE_stage5_official_dividends_gate.py \
+            --shadow-dir . --out shadow_stage5
+      - name: Distinguish source checks from market-regime release
+        id: source_gate
+        if: steps.stage5.outcome == 'success'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("shadow_stage5/STAGE5_QUELLEN_UND_RELEASE_GATES.json").read_text())
+          source_gates=("SPY_OFFICIAL_DIVIDEND_EVENT","SPY_ADJCLOSE_ARITHMETIC",
+                        "SPY_TARGET_BOUNDARY","SOURCE_RAW_HASH",
+                        "MACRO_READONLY_EVIDENCE")
+          failed=[g for g in source_gates if r["gates"].get(g)!="PASS"]
+          assert r["production_release"]=="NO_GO","Stage 5 cannot publish BASE!"
+          print("Source gates:", {g:r["gates"].get(g) for g in source_gates})
+          print("PRODUCTION RELEASE: NO_GO (by design)")
+          if failed: raise SystemExit("Failed source gates: "+", ".join(failed))
+          PY
+      - name: Visible result, even when sources fail
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '# IVY11 BASE Stage 5 – Official SPY Integrity'
+            echo ''
+            echo '**This workflow NEVER publishes a new BASE regime.**'
+            echo ''
+            echo '- Stage-4 audit: ${{ steps.bridge.outcome }}'
+            echo '- GPT FULL contract: ${{ steps.gpt_runtime.outcome }}'
+            echo '- Yahoo SPY source: ${{ steps.spy.outcome }}'
+            echo '- Official State Street XLSX: ${{ steps.ssga.outcome }}'
+            echo '- PIT macro evidence: ${{ steps.macro.outcome }}'
+            echo '- Independent event/adjusted close test: ${{ steps.stage5.outcome }}'
+            echo '- Real source-quality gate: ${{ steps.source_gate.outcome }}'
+            echo ''
+            echo 'Green here means verified source acquisition and comparison,'
+            echo 'NOT a current released BASE value.'
+            echo 'The bridge still requires an independently approved BASE candidate.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload complete Stage-5 audit even on errors
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVY11_BASE_STAGE5_SPY_QUELLENABNAHME
+          path: |
+            shadow_release_bridge/
+            shadow_gpt_runtime/
+            shadow_spy/
+            shadow_ssga/
+            shadow_macro/
+            shadow_stage5/
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Ensure production state and code stayed unchanged
+        if: always()
+        shell: bash
+        run: |
+          changed="$(git diff --name-only -- docs/ data/ src/ runtime/ || true)"
+          if [ -n "$changed" ]; then
+            echo "::error::Stage-5 shadow modified tracked production files"
+            exit 1
+          fi
+          echo 'No tracked production files modified.'
