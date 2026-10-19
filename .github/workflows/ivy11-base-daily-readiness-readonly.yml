@@ -1,0 +1,63 @@
+name: IVY11 BASE – Daily Source Evidence (READ ONLY)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 03:30 UTC Tue-Sat, after FAST schedules; previous NY close in UTC.
+    - cron: "30 3 * * 2-6"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ivy11-base-daily-source-evidence
+  cancel-in-progress: false
+
+jobs:
+  daily-evidence:
+    name: Immutable daily evidence – no regime publication
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - name: Checkout repository (READ ONLY)
+        uses: actions/checkout@v4
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned model-compatible readers
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install "xlrd>=2.0" "openpyxl>=3.1"
+      - name: Verify input scripts / bundle signatures
+        shell: bash
+        run: |
+          test -f src/IVY11_BASE_daily_readiness.py
+          test -f base-parity-research-bundle.zip
+          echo "No runtime model/state/public snapshot changes will be made."
+      - name: Collect FRED ALFRED as-of, Shiller and BIS research evidence
+        id: collect
+        shell: bash
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          python src/IVY11_BASE_daily_readiness.py \
+            --repo . \
+            --out daily_evidence
+      - name: Create visible audit summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f daily_evidence/DAILY_READINESS_REPORT.md ]; then
+            cat daily_evidence/DAILY_READINESS_REPORT.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Evidence collector failed before report generation – NO-GO.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload raw research evidence – NOT publication
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVY11_BASE_DAILY_QUELLEN_BELEGE
+          path: daily_evidence/
+          retention-days: 30
+          if-no-files-found: warn
