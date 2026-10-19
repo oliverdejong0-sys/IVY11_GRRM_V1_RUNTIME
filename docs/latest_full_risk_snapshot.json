@@ -1,12 +1,12 @@
 {
   "schema": "IVY11_GRRM_V1_FULL_RISK_V2",
   "runtime_revision": "V6.3_CACHE_SAFE",
-  "target_market_date": "2026-10-15",
-  "generated_utc": "2026-10-17T01:10:02+00:00",
+  "target_market_date": "2026-10-16",
+  "generated_utc": "2026-10-19T22:58:02+00:00",
   "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
-    "base_staleness_calendar_days": 13,
+    "base_staleness_calendar_days": 14,
     "calm_mode_max_staleness_days": 7,
     "alert_or_stress_requires_same_date_base": true,
     "status": "BASE_REFRESH_REQUIRED",
@@ -20,36 +20,36 @@
     "SOURCE_NOTE": "FROZEN_BASE_DIAGNOSTIC_ANCHOR_REFERENCE_ONLY"
   },
   "fast_action": {
-    "MSP_MARKET": 39.59187060766135,
-    "MSP_VOL": 42.73343373493976,
-    "MSP_CREDIT_CONTROL": 12.966184625421334,
+    "MSP_MARKET": 46.86723413937145,
+    "MSP_VOL": 63.05797569108314,
+    "MSP_CREDIT_CONTROL": 14.160687105892587,
     "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
     "SENTINEL_70_75": "NO STRESS",
-    "EQ_MA200_GAP_PCT": 6.797181798845009,
-    "EQ_DRAWDOWN_PCT": -0.9369968266169759,
-    "EQ_RET_5D_PCT": -0.2765126909009763,
-    "EQ_RET_20D_PCT": 1.456397963684175,
+    "EQ_MA200_GAP_PCT": 5.560999449793846,
+    "EQ_DRAWDOWN_PCT": -2.033144605816828,
+    "EQ_RET_5D_PCT": -1.9677109547117433,
+    "EQ_RET_20D_PCT": 0.204807408997576,
     "D200": "RISK ON",
     "MODE": "NORMAL MODE",
-    "VIX_RAW": 16.46,
-    "BAA10Y_RAW": 1.44,
-    "AAA10Y_RAW": 0.95,
-    "BAA_DATE": "2026-10-15",
-    "AAA_DATE": "2026-10-15"
+    "VIX_RAW": 19.99,
+    "BAA10Y_RAW": 1.46,
+    "AAA10Y_RAW": 0.97,
+    "BAA_DATE": "2026-10-16",
+    "AAA_DATE": "2026-10-16"
   },
   "risk_pressure": {
-    "score": 44.9712630740852,
-    "classification": "NORMAL",
+    "score": 49.061458648721306,
+    "classification": "ERHÖHT",
     "month_end_reference": {
       "reference_date": "2026-09-30",
       "score": 44.602823698388924,
       "classification": "NORMAL",
       "vp_source": "HISTORICAL_ANCHOR_VP"
     },
-    "delta_vs_month_end": 0.3684393756962763,
+    "delta_vs_month_end": 4.458634950332382,
     "weights": {
       "BASE_VP": 0.45,
       "MSP_MARKET": 0.25,
@@ -84,8 +84,8 @@
     "VIX_url": "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
-    "VIX_sha256": "142da967f3994c3c6e55d94eceea9288ff01bc4a971c8bc0c1d618ae8583e2f9",
-    "BAA_sha256": "a3686d8e655b1a9b4ecc2f97dd0dec33cb2d7a73b559d093e8d382daa635126d",
-    "AAA_sha256": "244bda291293532ab1de398115f339735da98bb4d0bd8ad192191c3c0335c7ed"
+    "VIX_sha256": "a9742d4deab98f7644bda10df92db0b6afbca17ccc8b64139c52ad2ca0963d42",
+    "BAA_sha256": "3272f4a413a31dc2395037dace06c4b4470f7b6f618cf138b3b02ad65c96a6da",
+    "AAA_sha256": "c2ba4c51bcfe636ba8ba7e49af728c05254dc01140363145b056ebc1823a8ec2"
   }
 }
