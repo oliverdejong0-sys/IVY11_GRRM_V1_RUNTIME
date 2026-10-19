@@ -1,0 +1,200 @@
+name: IVY11 BASE - Offizielle Quellen pruefen (READ ONLY)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-official-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout (READ ONLY)
+        uses: actions/checkout@v4
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install requests
+        run: python -m pip install "requests>=2.32,<3"
+      - name: Official-source connectivity (no state change)
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          python - <<'PY'
+          # IVY11 GRRM BASE official-source transport diagnosis (NO PUBLISH / NO STATE CHANGE).
+          # Executes in a GitHub Actions runner to use the repository's FRED_API_KEY secret.
+          import csv
+          import datetime as dt
+          import html.parser
+          import io
+          import json
+          import os
+          import re
+          import sys
+          import time
+          from pathlib import Path
+          from urllib.parse import urljoin, urlsplit
+          
+          import requests
+          
+          OUT = Path("base_source_audit")
+          OUT.mkdir(parents=True, exist_ok=True)
+          KEY = os.environ.get("FRED_API_KEY", "").strip()
+          SESSION = requests.Session()
+          SESSION.headers.update({"User-Agent": "IVY11-GRRM-BASE-official-source-connectivity/1.0"})
+          TIMEOUT = (5, 12)
+          ROWS = []
+          
+          def add(name, status, detail="", http_status=None, count=0, latest=""):
+              row = dict(source=name, status=status, http_status=http_status, count=count,
+                         latest=latest, detail=detail[:140])
+              ROWS.append(row)
+              print(f'{name}: {status}; HTTP={http_status}; {detail[:100]}', flush=True)
+          
+          def http_get(url, params=None, cap=160000):
+              """Read at most `cap` bytes, with no URL/secret logging."""
+              start = time.monotonic()
+              with SESSION.get(url, params=params, timeout=TIMEOUT, stream=True, allow_redirects=True) as r:
+                  code = r.status_code
+                  ctype = r.headers.get("Content-Type", "")
+                  if code != 200:
+                      return code, ctype, b"", round(time.monotonic() - start, 2)
+                  parts = bytearray()
+                  for chunk in r.iter_content(chunk_size=8192):
+                      if chunk:
+                          parts.extend(chunk[:max(0, cap-len(parts))])
+                          if len(parts) >= cap:
+                              break
+                  return code, ctype, bytes(parts), round(time.monotonic()-start, 2)
+          
+          def fred(series):
+              name = "FRED_API_" + series
+              if not KEY:
+                  add(name, "NO_KEY", "GitHub secret FRED_API_KEY missing")
+                  return
+              if not re.fullmatch(r"[a-z0-9]{32}", KEY):
+                  add(name, "KEY_INVALID_FORMAT", "FRED API key must be 32 lowercase alphanumeric characters")
+                  return
+              try:
+                  code, kind, content, elapsed = http_get(
+                      "https://api.stlouisfed.org/fred/series/observations",
+                      {"series_id": series, "api_key": KEY, "file_type": "json",
+                       "observation_start": "2026-07-01", "sort_order": "desc", "limit": 300})
+                  if code != 200:
+                      add(name, "HTTP_ERROR", "FRED API returned non-200", code)
+                      return
+                  obj = json.loads(content)
+                  observations = obj.get("observations", [])
+                  valid = [x for x in observations if x.get("value") not in (None, ".")
+                           and re.fullmatch(r"\d{4}-\d{2}-\d{2}", x.get("date",""))]
+                  if not valid:
+                      add(name, "NO_VALID_OBSERVATIONS", f"response {len(content)} bytes", code)
+                      return
+                  latest = max(x["date"] for x in valid)
+                  add(name, "API_PASS_NOT_PARITY", f"{len(valid)} observations; {elapsed}s",
+                      code, len(valid), latest)
+              except Exception as ex:
+                  # Do not include exception text: it may include URL parameters / API key.
+                  add(name, "CONNECTION_FAIL", type(ex).__name__)
+          
+          class OfficialShillerLinks(html.parser.HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links = []
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower() == "a":
+                      h = dict(attrs).get("href", "")
+                      if urlsplit(h).path.lower().endswith("/ie_data.xls"):
+                          self.links.append(h)
+          
+          def shiller():
+              name = "SHILLER_OFFICIAL"
+              try:
+                  code, ctype, webpage, _ = http_get("https://shillerdata.com/", cap=320000)
+                  if code != 200 or not webpage:
+                      add(name, "LANDING_PAGE_FAIL", "Official shillerdata.com not reachable", code)
+                      return
+                  parser = OfficialShillerLinks()
+                  parser.feed(webpage.decode("utf-8", errors="replace"))
+                  if not parser.links:
+                      add(name, "OFFICIAL_LINK_MISSING", "ie_data.xls link absent on current official landing page", code)
+                      return
+                  doc = urljoin("https://shillerdata.com/", parser.links[0])
+                  xcode, xtype, payload, _ = http_get(doc)
+                  if xcode != 200:
+                      add(name, "WORKBOOK_HTTP_ERROR", "Official workbook not reachable", xcode)
+                      return
+                  if not (payload.startswith(bytes.fromhex("D0CF11E0")) or payload.startswith(b"PK\x03\x04")):
+                      add(name, "WORKBOOK_FORMAT_FAIL", f"First bytes not xls/xlsx; received {len(payload)}", xcode)
+                      return
+                  add(name, "WORKBOOK_PASS_NOT_PARITY", f"Official link present; {len(payload)} prefix bytes",
+                      xcode, len(payload))
+              except Exception as ex:
+                  add(name, "CONNECTION_FAIL", type(ex).__name__)
+          
+          def bis(name, flow, key):
+              try:
+                  url = f"https://stats.bis.org/api/v2/data/dataflow/BIS/{flow}/1.0/{key}"
+                  code, ctype, data, _ = http_get(url, {"format": "csvfile"})
+                  if code != 200:
+                      add(name, "HTTP_ERROR", "BIS API non-200", code)
+                      return
+                  sample = data[:6000].decode("utf-8-sig", errors="replace")
+                  if len(data) < 100 or "TIME_PERIOD" not in sample or "OBS_VALUE" not in sample:
+                      add(name, "CSV_FORMAT_FAIL", "No recognized BIS observation headers", code)
+                      return
+                  add(name, "CSV_PASS_NOT_PARITY", f"Received {len(data)} prefix bytes", code,len(data))
+              except Exception as ex:
+                  add(name, "CONNECTION_FAIL", type(ex).__name__)
+          
+          for series in ("VIXCLS", "NFCI", "T10Y3M", "SAHMREALTIME", "BAA10Y", "AAA10Y"):
+              fred(series)
+          shiller()
+          bis("BIS_CREDIT_GAP", "WS_CREDIT_GAP", "Q.US.P.A.C")
+          bis("BIS_DSR", "WS_DSR", "Q.US.P")
+          
+          status = {
+              "schema": "IVY11_BASE_OFFICIAL_SOURCE_CONNECTIVITY_V1",
+              "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+              "source_run_location": "GITHUB_ACTIONS",
+              "fred_api_key_configured": bool(KEY),
+              "checked": len(ROWS),
+              "passed_transport_only": sum(x["status"].endswith("NOT_PARITY") for x in ROWS),
+              "source_parity": "NOT_TESTED",
+              "historical_replay": "NOT_TESTED_IN_THIS_WORKFLOW",
+              "base_refresh": "NOT_PERFORMED",
+              "production_release": "NO_GO",
+              "runtime_changed": False,
+          }
+          (OUT/"SUMMARY.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
+          with (OUT/"SOURCE_DIAGNOSIS.csv").open("w", encoding="utf-8-sig", newline="") as f:
+              w = csv.DictWriter(f, fieldnames=["source", "status", "http_status", "count", "latest", "detail"])
+              w.writeheader()
+              w.writerows(ROWS)
+          print("Report written to base_source_audit/ (read-only; no BASE update)", flush=True)
+          PY
+      - name: Upload complete diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVY11_BASE_QUELLEN_GITHUB_ERGEBNIS
+          path: base_source_audit/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report incomplete transport (no false PASS)
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("base_source_audit/SUMMARY.json")
+          if not p.exists():
+              raise SystemExit("NO_GO: Missing source audit")
+          d = json.loads(p.read_text())
+          count = d.get("passed_transport_only", 0)
+          if count != 9:
+              raise SystemExit(f"NO_GO: {count}/9 transports; see uploaded audit ZIP.")
+          print("9/9 transport checks passed. BASE parity is still NOT TESTED; NO PUBLISH.")
+          PY
