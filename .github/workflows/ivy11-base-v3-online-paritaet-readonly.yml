@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo "6902ecd60f3e4e4435a9d2c0f2e7e9fe3cc6c292d2db0930a38f90bf2a330fd4  base-parity-research-bundle.zip" | sha256sum -c -
+          echo "8a11d225af945913b93e7d094d09525b989c41858907e83072e0234a0e7ec324  base-parity-research-bundle.zip" | sha256sum -c -
           python - <<'PY'
           import zipfile
           p="base-parity-research-bundle.zip"
@@ -40,6 +40,8 @@ jobs:
                   "base_diagnostic/TEST_Online_Safety_Offline.py",
                   "base_diagnostic/original_pruefdateien/HG_original.csv",
                   "base_diagnostic/original_pruefdateien/HI_original.py",
+                  "base_diagnostic/original_pruefdateien/HH_BIS_Official_Schema_Adapter.py",
+                  "base_diagnostic/TEST_BIS_SAHM_20261019.py",
               ):
                   assert req in names, f"Missing audited file: {req}"
           PY
@@ -59,6 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           python base_parity_research/base_diagnostic/TEST_Online_Safety_Offline.py 2>&1 | tee base_parity_audit/UNIT_TESTS.log
+          python base_parity_research/base_diagnostic/TEST_BIS_SAHM_20261019.py 2>&1 | tee base_parity_audit/BIS_SAHM_REGRESSION_TESTS.log
           python base_parity_research/base_diagnostic/TEST_Canonical_Historical_Replay.py | tee base_parity_audit/offline_replay_stdout.txt
 
       - name: Use exact published FAST target and preserve input evidence
@@ -80,7 +83,7 @@ jobs:
           (out/"RESEARCH_SOURCE.txt").write_text(
               "Git commit: " + __import__("os").environ.get("GITHUB_SHA","LOCAL") + "\n"
               "FAST target: "+str(day)+"\n"
-              "Bundle SHA256: 6902ecd60f3e4e4435a9d2c0f2e7e9fe3cc6c292d2db0930a38f90bf2a330fd4\n"
+              "Bundle SHA256: 8a11d225af945913b93e7d094d09525b989c41858907e83072e0234a0e7ec324\n"
               "No repository data or snapshot is modified.\n",
               encoding="utf-8"
           )
