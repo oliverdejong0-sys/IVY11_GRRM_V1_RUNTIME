@@ -1,0 +1,98 @@
+name: IVY11 BASE - Daily Shadow + Release Bridge (READ ONLY)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Tue–Sat 04:30 UTC, after the established FAST and BASE evidence workflows.
+    - cron: "30 4 * * 2-6"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ivy11-base-shadow-release-bridge
+  cancel-in-progress: false
+
+jobs:
+  independent-shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout for inspection only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install repo dependencies for original FULL builder and SPY collector
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install "xlrd>=2.0" "openpyxl>=3.1"
+      - name: Immutable snapshot status + BASE bridge audit
+        id: bridge
+        run: |
+          python src/IVY11_BASE_release_bridge.py audit \
+            --repo . --out shadow_release_bridge
+      - name: Run bridge source/certificate/transactional-sandbox tests
+        id: unittest
+        run: |
+          python src/IVY11_BASE_release_bridge.py selftest \
+            --repo . --out shadow_release_bridge
+      - name: Start prospective SPY prices, dividends and splits archive
+        id: spy
+        run: |
+          python src/IVY11_BASE_release_bridge.py capture-spy \
+            --repo . --out shadow_spy
+      - name: Capture official State Street SPY distributions XLSX (independent dividend archive)
+        id: ssga
+        run: |
+          python src/IVY11_BASE_release_bridge.py capture-ssga             --repo . --out shadow_ssga
+      - name: Archive independent macro evidence (FRED/ALFRED, Shiller, BIS)
+        id: macro
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          python src/IVY11_BASE_daily_readiness.py \
+            --repo . --out shadow_macro
+      - name: Visible NO-GO versus test-success status
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '# IVY11 BASE – Shadow / release bridge'
+            echo ''
+            echo '**READ ONLY. No current BASE regime is authorized by this workflow.**'
+            echo ''
+            echo '- FAST/FULL audit result: ${{ steps.bridge.outcome }}'
+            echo '- Isolated security tests: ${{ steps.unittest.outcome }}'
+            echo '- New prospective SPY snapshot: ${{ steps.spy.outcome }}'
+            echo '- Official State Street distributions archive: ${{ steps.ssga.outcome }}'
+            echo '- FRED/ALFRED and slow macro source archive: ${{ steps.macro.outcome }}'
+            echo ''
+            echo 'A green workflow means that the inspection completed, NOT that a BASE refresh was published.'
+            echo 'Production release stays NO_GO until independent model, all sources and human approval pass.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload the complete shadow evidence, even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVY11_BASE_STAGE4_TAEGLICHE_SHADOW_BELEGE
+          path: |
+            shadow_release_bridge/
+            shadow_spy/
+            shadow_ssga/
+            shadow_macro/
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Assert the workflow did not modify tracked production files
+        if: always()
+        shell: bash
+        run: |
+          changed="$(git diff --name-only -- docs/ data/ src/ runtime/ || true)"
+          if [ -n "$changed" ]; then
+            echo "::error::Tracked production file was modified in shadow workflow"
+            exit 1
+          fi
+          echo 'Production documents, model seed, BASE frozen anchor and code unchanged.'
