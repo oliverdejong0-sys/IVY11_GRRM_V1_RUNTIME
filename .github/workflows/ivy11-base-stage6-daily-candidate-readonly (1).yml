@@ -1,0 +1,124 @@
+name: IVY11 BASE - Stage 6 Daily REAL Candidate (READ ONLY)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Tue–Sat, after FAST (01:10) and Stage 5 (05:30). Best-effort GitHub schedule.
+    - cron: "0 7 * * 2-6"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ivy11-base-stage6-daily-real-research-candidate
+  cancel-in-progress: false
+
+jobs:
+  compute-real-base-research-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout without writable credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install current repo dependencies and verified Shiller XLS reader
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install "requests==2.32.5" "xlrd==2.0.1" "openpyxl==3.1.5"
+      - name: Verify existing BASE research bundle and candidate source
+        run: |
+          test -f base-parity-research-bundle.zip
+          test -f src/IVY11_BASE_daily_readiness.py
+          test -f src/IVY11_BASE_stage5_official_dividends_gate.py
+          test -f src/IVY11_BASE_release_bridge.py
+          python -m py_compile src/IVY11_BASE_stage6_daily_candidate.py
+      - name: Stage 4 BASE preflight required by Stage 5 (READ ONLY)
+        id: bridge
+        run: |
+          python src/IVY11_BASE_release_bridge.py audit \
+            --repo . --out shadow_release_bridge
+      - name: Capture SPY adjusted prices and event list
+        id: spy
+        run: |
+          python src/IVY11_BASE_release_bridge.py capture-spy \
+            --repo . --out shadow_spy
+      - name: Capture official State Street SPY distributions
+        id: ssga
+        run: |
+          python src/IVY11_BASE_release_bridge.py capture-ssga \
+            --repo . --out shadow_ssga
+      - name: Capture macro FRED as-of FAST target, official Shiller and BIS
+        id: macro
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          python src/IVY11_BASE_daily_readiness.py \
+            --repo . --out shadow_macro
+      - name: Stage 5 real SPY / independent dividend and source-integrity gates
+        id: stage5
+        run: |
+          python src/IVY11_BASE_stage5_official_dividends_gate.py \
+            --shadow-dir . --out shadow_stage5
+      - name: Compute daily BASE V3 candidate from historical as-of FRED
+        id: candidate
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          python src/IVY11_BASE_stage6_daily_candidate.py \
+            --bundle base-parity-research-bundle.zip \
+            --fast-json docs/latest_fast_snapshot.json \
+            --evidence-dir . \
+            --out shadow_stage6 \
+            --max-market-age-days 5 \
+            --max-bridge-days 60 \
+            --require-latest-closed-spy-date
+      - name: Always state precisely which gate passed
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# IVY11 BASE – Stage 6 Daily Candidate"
+            echo
+            echo "**READ ONLY, RESEARCH ONLY, NO PRODUCTION PUBLISH.**"
+            echo
+            echo "- Stage-4 required BASE preflight: ${{ steps.bridge.outcome }}"\n            echo "- SPY source: ${{ steps.spy.outcome }}"
+            echo "- SSGA official distribution: ${{ steps.ssga.outcome }}"
+            echo "- Official macro acquisition: ${{ steps.macro.outcome }}"
+            echo "- Stage-5 gate: ${{ steps.stage5.outcome }}"
+            echo "- Actual daily BASE calculation: ${{ steps.candidate.outcome }}"
+            echo
+            echo "A green result means a new RESEARCH candidate was calculated,"
+            echo "NOT that the GPT may show it as the released BASE regime."
+            echo
+            echo "Candidate source notes explicitly remain PIT-B / non-original kernel."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Artifact even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: IVY11_BASE_STAGE6_ECHTER_TAGESKANDIDAT_READONLY
+          path: |
+            shadow_stage6/
+            shadow_release_bridge/
+            shadow_stage5/
+            shadow_macro/
+            shadow_spy/
+            shadow_ssga/
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Verify nothing was changed in production
+        if: always()
+        shell: bash
+        run: |
+          changed="$(git diff --name-only -- docs/ data/ runtime/ src/ .github/workflows/ || true)"
+          if [ -n "$changed" ]; then
+            echo "::error::Tracked repository files changed in READ ONLY workflow:"
+            echo "$changed"
+            exit 1
+          fi
+          echo "No tracked production files modified."
