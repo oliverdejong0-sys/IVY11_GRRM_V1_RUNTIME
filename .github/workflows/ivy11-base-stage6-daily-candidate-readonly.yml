@@ -37,6 +37,11 @@ jobs:
           test -f src/IVY11_BASE_stage5_official_dividends_gate.py
           test -f src/IVY11_BASE_release_bridge.py
           python -m py_compile src/IVY11_BASE_stage6_daily_candidate.py
+      - name: Stage 4 BASE preflight required by Stage 5 (READ ONLY)
+        id: bridge
+        run: |
+          python src/IVY11_BASE_release_bridge.py audit \
+            --repo . --out shadow_release_bridge
       - name: Capture SPY adjusted prices and event list
         id: spy
         run: |
@@ -81,7 +86,7 @@ jobs:
             echo
             echo "**READ ONLY, RESEARCH ONLY, NO PRODUCTION PUBLISH.**"
             echo
-            echo "- SPY source: ${{ steps.spy.outcome }}"
+            echo "- Stage-4 required BASE preflight: ${{ steps.bridge.outcome }}"\n            echo "- SPY source: ${{ steps.spy.outcome }}"
             echo "- SSGA official distribution: ${{ steps.ssga.outcome }}"
             echo "- Official macro acquisition: ${{ steps.macro.outcome }}"
             echo "- Stage-5 gate: ${{ steps.stage5.outcome }}"
@@ -99,6 +104,7 @@ jobs:
           name: IVY11_BASE_STAGE6_ECHTER_TAGESKANDIDAT_READONLY
           path: |
             shadow_stage6/
+            shadow_release_bridge/
             shadow_stage5/
             shadow_macro/
             shadow_spy/
