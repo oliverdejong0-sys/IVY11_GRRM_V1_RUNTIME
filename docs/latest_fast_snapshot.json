@@ -1,6 +1,6 @@
 {
   "schema": "IVY11_GRRM_V1_FAST_DAILY_V1",
-  "generated_utc": "2026-10-23T23:48:57+00:00",
+  "generated_utc": "2026-10-24T01:19:37+00:00",
   "target_market_date": "2026-10-22",
   "frozen_anchor_date": "2026-10-02",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
@@ -46,7 +46,7 @@
     "VIX_url": "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
-    "VIX_sha256": "079811c437a089a4a5674b2531f6302f8e3721efdd070b0b9d68b423f56e403e",
+    "VIX_sha256": "f94378e505b286168d8dd466cc3a30bb12606ba34084d7ac53de953c75ba2ecd",
     "BAA_sha256": "a1e3892075a3a0e599b35f2c428b9803a32aa1c544674b0c984e6086917936f5",
     "AAA_sha256": "bb015244589f166c2641ebf3dc90338c2c0029dd64d06631b8e9b1ee77316b9b"
   },
