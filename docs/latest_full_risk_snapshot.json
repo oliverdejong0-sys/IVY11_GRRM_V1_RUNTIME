@@ -2,7 +2,7 @@
   "schema": "IVY11_GRRM_V1_FULL_RISK_V2",
   "runtime_revision": "V6.3_CACHE_SAFE",
   "target_market_date": "2026-10-26",
-  "generated_utc": "2026-10-27T23:52:25+00:00",
+  "generated_utc": "2026-10-28T01:31:26+00:00",
   "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
@@ -84,7 +84,7 @@
     "VIX_url": "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
-    "VIX_sha256": "8e67801e46bab11ab543ac8d575544db4e8cd6fd7e4c7e9dc419b498de8a77ff",
+    "VIX_sha256": "6da7f149324ec456c80f6d7e96c90b5d3bcaa3d0f6a4274f7840542db9809265",
     "BAA_sha256": "604a00847a163f6e0c5799b868f33917c47d2cc688aefe18682356b459779f95",
     "AAA_sha256": "051630f9d46be6b49a7da528574015d437e092f6b96b1679936c524f011fb6af"
   }
