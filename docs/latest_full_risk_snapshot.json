@@ -1,12 +1,12 @@
 {
   "schema": "IVY11_GRRM_V1_FULL_RISK_V2",
   "runtime_revision": "V6.3_CACHE_SAFE",
-  "target_market_date": "2026-10-26",
-  "generated_utc": "2026-10-28T01:31:26+00:00",
+  "target_market_date": "2026-10-27",
+  "generated_utc": "2026-10-28T23:08:25+00:00",
   "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
-    "base_staleness_calendar_days": 24,
+    "base_staleness_calendar_days": 25,
     "calm_mode_max_staleness_days": 7,
     "alert_or_stress_requires_same_date_base": true,
     "status": "BASE_REFRESH_REQUIRED",
@@ -20,28 +20,28 @@
     "SOURCE_NOTE": "FROZEN_BASE_DIAGNOSTIC_ANCHOR_REFERENCE_ONLY"
   },
   "fast_action": {
-    "MSP_MARKET": 45.46183295425631,
-    "MSP_VOL": 54.611415672363755,
+    "MSP_MARKET": 41.30959533001469,
+    "MSP_VOL": 49.779664660361135,
     "MSP_CREDIT_CONTROL": 14.232942199043894,
     "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
     "SENTINEL_70_75": "NO STRESS",
-    "EQ_MA200_GAP_PCT": 5.50744306490929,
-    "EQ_DRAWDOWN_PCT": -1.761032905742299,
-    "EQ_RET_5D_PCT": -0.14481596125754947,
-    "EQ_RET_20D_PCT": -0.0313462779962026,
+    "EQ_MA200_GAP_PCT": 6.027693043801308,
+    "EQ_DRAWDOWN_PCT": -1.2103933288683977,
+    "EQ_RET_5D_PCT": 0.07931673639487435,
+    "EQ_RET_20D_PCT": 0.7144675281712587,
     "D200": "RISK ON",
     "MODE": "NORMAL MODE",
-    "VIX_RAW": 18.39,
+    "VIX_RAW": 17.52,
     "BAA10Y_RAW": 1.45,
     "AAA10Y_RAW": 0.98,
     "BAA_DATE": "2026-10-26",
     "AAA_DATE": "2026-10-26"
   },
   "risk_pressure": {
-    "score": 47.879903369200846,
+    "score": 46.358668861940174,
     "classification": "ERHÖHT",
     "month_end_reference": {
       "reference_date": "2026-09-30",
@@ -49,7 +49,7 @@
       "classification": "NORMAL",
       "vp_source": "HISTORICAL_ANCHOR_VP"
     },
-    "delta_vs_month_end": 3.277079670811922,
+    "delta_vs_month_end": 1.7558451635512498,
     "weights": {
       "BASE_VP": 0.45,
       "MSP_MARKET": 0.25,
@@ -85,7 +85,7 @@
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
     "VIX_sha256": "6da7f149324ec456c80f6d7e96c90b5d3bcaa3d0f6a4274f7840542db9809265",
-    "BAA_sha256": "604a00847a163f6e0c5799b868f33917c47d2cc688aefe18682356b459779f95",
-    "AAA_sha256": "051630f9d46be6b49a7da528574015d437e092f6b96b1679936c524f011fb6af"
+    "BAA_sha256": "c7c5aa033b463058489c0c89d591a5128b8ffa61c02b3212842bd02dd4365b83",
+    "AAA_sha256": "560b0bdc9a8a291af7c2047c48d8c113aa7887e3686d67fa6a73390234e18a77"
   }
 }
