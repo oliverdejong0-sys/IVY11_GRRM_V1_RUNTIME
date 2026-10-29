@@ -1,30 +1,30 @@
 {
   "schema": "IVY11_GRRM_V1_FAST_DAILY_V1",
-  "generated_utc": "2026-10-29T01:31:30+00:00",
-  "target_market_date": "2026-10-27",
+  "generated_utc": "2026-10-29T23:09:31+00:00",
+  "target_market_date": "2026-10-28",
   "frozen_anchor_date": "2026-10-02",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
   "research_status": "CLEAN3F_vs_SENTINEL_70_75_PARALLEL_PROSPECTIVE",
   "values": {
-    "MSP_MARKET": 41.30959533001469,
-    "MSP_VOL": 49.779664660361135,
-    "MSP_CREDIT_CONTROL": 14.232942199043894,
+    "MSP_MARKET": 41.62859868075036,
+    "MSP_VOL": 45.95916174099946,
+    "MSP_CREDIT_CONTROL": 13.507495111883554,
     "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
     "SENTINEL_70_75": "NO STRESS",
-    "EQ_MA200_GAP_PCT": 6.027693043801308,
-    "EQ_DRAWDOWN_PCT": -1.2103933288683977,
-    "EQ_RET_5D_PCT": 0.07931673639487435,
-    "EQ_RET_20D_PCT": 0.7144675281712587,
+    "EQ_MA200_GAP_PCT": 6.325218146052292,
+    "EQ_DRAWDOWN_PCT": -0.8702497866954317,
+    "EQ_RET_5D_PCT": -0.10089760180297391,
+    "EQ_RET_20D_PCT": 1.26929082435836,
     "D200": "RISK ON",
     "MODE": "NORMAL MODE",
-    "VIX_RAW": 17.52,
-    "BAA10Y_RAW": 1.45,
-    "AAA10Y_RAW": 0.98,
-    "BAA_DATE": "2026-10-26",
-    "AAA_DATE": "2026-10-26"
+    "VIX_RAW": 16.91,
+    "BAA10Y_RAW": 1.43,
+    "AAA10Y_RAW": 0.97,
+    "BAA_DATE": "2026-10-28",
+    "AAA_DATE": "2026-10-28"
   },
   "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
   "source_checks": {
@@ -47,8 +47,8 @@
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
     "VIX_sha256": "b0d2e90197b4b5403fd689fc580eb2506f07c867f0115034810c7218fc986b7f",
-    "BAA_sha256": "c7c5aa033b463058489c0c89d591a5128b8ffa61c02b3212842bd02dd4365b83",
-    "AAA_sha256": "560b0bdc9a8a291af7c2047c48d8c113aa7887e3686d67fa6a73390234e18a77"
+    "BAA_sha256": "9d658c71bf877c253ccd1005ee5e08395c59cc28ef3d28c7935ce832dde6d299",
+    "AAA_sha256": "06fe7fc74c67ae06eae7ca61f00f68dd46401e163c4901554c390bc5c0130572"
   },
-  "replay_days_after_anchor": 17
+  "replay_days_after_anchor": 18
 }
