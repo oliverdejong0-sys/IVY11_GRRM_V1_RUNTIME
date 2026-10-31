@@ -1,23 +1,23 @@
 # IVY11 – FAST DAILY Runtime Snapshot
 
-**Datenstand:** 2026-10-29  
-**Erzeugt:** 2026-10-30T23:56:01+00:00  
+**Datenstand:** 2026-10-30  
+**Erzeugt:** 2026-10-31T01:31:48+00:00  
 **Modus:** 🟢 **NORMAL MODE**  
 **Action Authority:** SHADOW / keine automatische reale Cashaktion
 
 | Indikator | Wert |
 |---|---:|
-| MSP Market | 46.66 |
-| MSP Volatility | 47.88 |
+| MSP Market | 56.85 |
+| MSP Volatility | 60.11 |
 | Fast Sentinel 65/70 | NO ALERT |
 | MSP Credit | 16.07 |
 | CLEAN3F Vote | 0.0% |
 | CLEAN3F | NO STRESS |
 | Sentinel 70/75 | NO STRESS |
-| 200D-Abstand | 5.86% |
-| Drawdown vom ATH | -1.25% |
-| 5D-Bewegung | 0.71% |
-| 20D-Bewegung | 0.70% |
+| 200D-Abstand | 3.93% |
+| Drawdown vom ATH | -3.00% |
+| 5D-Bewegung | -0.56% |
+| 20D-Bewegung | -1.81% |
 | 200D | RISK ON |
 | CLEAN3F vs. 70/75 | ÜBEREINSTIMMUNG |
 
