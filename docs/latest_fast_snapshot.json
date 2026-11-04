@@ -1,30 +1,30 @@
 {
   "schema": "IVY11_GRRM_V1_FAST_DAILY_V1",
-  "generated_utc": "2026-11-04T01:36:56+00:00",
-  "target_market_date": "2026-11-02",
+  "generated_utc": "2026-11-04T23:14:28+00:00",
+  "target_market_date": "2026-11-03",
   "frozen_anchor_date": "2026-10-02",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
   "research_status": "CLEAN3F_vs_SENTINEL_70_75_PARALLEL_PROSPECTIVE",
   "values": {
-    "MSP_MARKET": 58.53436032607209,
-    "MSP_VOL": 68.61302105715514,
-    "MSP_CREDIT_CONTROL": 21.14779020523401,
+    "MSP_MARKET": 57.38389284664577,
+    "MSP_VOL": 67.17692555591363,
+    "MSP_CREDIT_CONTROL": 21.617806731813246,
     "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
     "FAST_SENTINEL_65_70": "NO ALERT",
     "SENTINEL_70_75": "NO STRESS",
-    "EQ_MA200_GAP_PCT": 3.3846760918916585,
-    "EQ_DRAWDOWN_PCT": -3.464304552641684,
-    "EQ_RET_5D_PCT": -1.7338045149285164,
-    "EQ_RET_20D_PCT": -2.9335520052871877,
+    "EQ_MA200_GAP_PCT": 3.6481935129460297,
+    "EQ_DRAWDOWN_PCT": -3.1755060925867773,
+    "EQ_RET_5D_PCT": -1.9891897841644357,
+    "EQ_RET_20D_PCT": -3.1755060925867773,
     "D200": "RISK ON",
     "MODE": "NORMAL MODE",
-    "VIX_RAW": 21.15,
-    "BAA10Y_RAW": 1.53,
+    "VIX_RAW": 20.83,
+    "BAA10Y_RAW": 1.54,
     "AAA10Y_RAW": 1.08,
-    "BAA_DATE": "2026-11-02",
-    "AAA_DATE": "2026-11-02"
+    "BAA_DATE": "2026-11-03",
+    "AAA_DATE": "2026-11-03"
   },
   "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
   "source_checks": {
@@ -46,9 +46,9 @@
     "VIX_url": "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
-    "VIX_sha256": "2b76ef381fbff39fa7a500d4973d01952ccb47368a27b603b88e6bc78e990b42",
-    "BAA_sha256": "b0c230dfffb4fb9a82feede047dfe01a580a857acd186dd7cf5ff753480b88bb",
-    "AAA_sha256": "c1924c7724e22dc3980238d580c2bf18635b8ffa63dcaa965e6da9a62437d8d5"
+    "VIX_sha256": "e5d1e436c05c0e346387984c9750daf5d8da140ba6e34bca79d81b326510a62b",
+    "BAA_sha256": "e3ed25cc7a8775ceb4d8c2450dfecdfe0a047c02134f09c16f31ce8d0f20d9d1",
+    "AAA_sha256": "3a19e298492c76b991a823f3abe1ead9df926d3f9df8c96a60deecc8e2f58c53"
   },
-  "replay_days_after_anchor": 21
+  "replay_days_after_anchor": 22
 }
