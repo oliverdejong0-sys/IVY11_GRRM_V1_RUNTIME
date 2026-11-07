@@ -2,7 +2,7 @@
   "schema": "IVY11_GRRM_V1_FULL_RISK_V2",
   "runtime_revision": "V6.3_CACHE_SAFE",
   "target_market_date": "2026-11-05",
-  "generated_utc": "2026-11-06T07:12:48+00:00",
+  "generated_utc": "2026-11-07T02:14:24+00:00",
   "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
@@ -22,10 +22,10 @@
   "fast_action": {
     "MSP_MARKET": 66.8726443505329,
     "MSP_VOL": 89.51240468263344,
-    "MSP_CREDIT_CONTROL": 19.704700901096516,
-    "CLEAN3F_VOTE_PCT": 0.0,
+    "MSP_CREDIT_CONTROL": 24.967433782023445,
+    "CLEAN3F_VOTE_PCT": 11.11111111111111,
     "CLEAN3F_STRESS": false,
-    "CLEAN3F_R6_R7_COUNT": 0,
+    "CLEAN3F_R6_R7_COUNT": 27,
     "FAST_SENTINEL_65_70": "ALERT",
     "SENTINEL_70_75": "NO STRESS",
     "EQ_MA200_GAP_PCT": 0.630958629086531,
@@ -35,13 +35,13 @@
     "D200": "RISK ON",
     "MODE": "ALERT MODE",
     "VIX_RAW": 28.18,
-    "BAA10Y_RAW": 1.52,
-    "AAA10Y_RAW": 1.06,
-    "BAA_DATE": "2026-11-04",
-    "AAA_DATE": "2026-11-04"
+    "BAA10Y_RAW": 1.57,
+    "AAA10Y_RAW": 1.13,
+    "BAA_DATE": "2026-11-05",
+    "AAA_DATE": "2026-11-05"
   },
   "risk_pressure": {
-    "score": 57.817056859707485,
+    "score": 58.86960343589288,
     "classification": "ERHÖHT",
     "month_end_reference": {
       "reference_date": "2026-10-02",
@@ -49,7 +49,7 @@
       "classification": "NORMAL",
       "vp_source": "HISTORICAL_ANCHOR_VP"
     },
-    "delta_vs_month_end": 13.644631303804879,
+    "delta_vs_month_end": 14.69717787999027,
     "weights": {
       "BASE_VP": 0.45,
       "MSP_MARKET": 0.25,
@@ -85,7 +85,7 @@
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
     "VIX_sha256": "89d2c4f6015903fa1c86f0ace7d37393d2eb9fd037183688eb35bdeb25b2f0b7",
-    "BAA_sha256": "cd0657b7e4d1240d249bf1c8993ff6c12fb96227ce30170bb34f1a6f788428bd",
-    "AAA_sha256": "db16c34ecc0b1107b15836b9f8ab51594c4051a5d396b7661680afb447390850"
+    "BAA_sha256": "905547fceebc094575963c973e02bb951fa076953a4eafbf00d764dfd455a660",
+    "AAA_sha256": "79dfe54cf287c726d159a29cffc311fc52725b5742864d587ea6c52725ab6995"
   }
 }
