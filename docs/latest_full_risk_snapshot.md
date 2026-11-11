@@ -12,7 +12,7 @@
 
 ## Risikoindikatoren
 - MSP Market: **55.39**
-- MSP Credit: **24.68**
+- MSP Credit: **19.89**
 - MSP Volatility: **62.75**
 - Fast Sentinel 65/70: **NO ALERT**
 - CLEAN3F Vote: **0.0%**
@@ -23,9 +23,9 @@
 - 20D-Bewegung: **-3.27%**
 
 ## Risk Pressure
-- aktuell: **53.3/100 – ERHÖHT**
+- aktuell: **52.3/100 – ERHÖHT**
 - letzter Monatsultimo: **44.2/100 (2026-10-02)**
-- Veränderung: **+9.1 Punkte**
+- Veränderung: **+8.1 Punkte**
 - Formel: **45% BASE VP + 25% MSP Market + 20% MSP Credit + 10% MSP Volatility**
 - Verwendung: **nur diagnostisch; keine Cash-/IVY-Steuerung**
 

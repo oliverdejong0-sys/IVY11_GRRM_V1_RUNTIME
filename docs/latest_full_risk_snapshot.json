@@ -2,7 +2,7 @@
   "schema": "IVY11_GRRM_V1_FULL_RISK_V2",
   "runtime_revision": "V6.3_CACHE_SAFE",
   "target_market_date": "2026-11-09",
-  "generated_utc": "2026-11-10T07:39:14+00:00",
+  "generated_utc": "2026-11-11T02:08:07+00:00",
   "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
@@ -22,7 +22,7 @@
   "fast_action": {
     "MSP_MARKET": 55.390569869858375,
     "MSP_VOL": 62.74562439600558,
-    "MSP_CREDIT_CONTROL": 24.677086725279498,
+    "MSP_CREDIT_CONTROL": 19.888213588018232,
     "CLEAN3F_VOTE_PCT": 0.0,
     "CLEAN3F_STRESS": false,
     "CLEAN3F_R6_R7_COUNT": 0,
@@ -35,13 +35,13 @@
     "D200": "RISK ON",
     "MODE": "NORMAL MODE",
     "VIX_RAW": 19.92,
-    "BAA10Y_RAW": 1.56,
-    "AAA10Y_RAW": 1.13,
-    "BAA_DATE": "2026-11-06",
-    "AAA_DATE": "2026-11-06"
+    "BAA10Y_RAW": 1.51,
+    "AAA10Y_RAW": 1.07,
+    "BAA_DATE": "2026-11-09",
+    "AAA_DATE": "2026-11-09"
   },
   "risk_pressure": {
-    "score": 53.26433737571267,
+    "score": 52.30656274826041,
     "classification": "ERHÖHT",
     "month_end_reference": {
       "reference_date": "2026-10-02",
@@ -49,7 +49,7 @@
       "classification": "NORMAL",
       "vp_source": "HISTORICAL_ANCHOR_VP"
     },
-    "delta_vs_month_end": 9.091911819810065,
+    "delta_vs_month_end": 8.134137192357805,
     "weights": {
       "BASE_VP": 0.45,
       "MSP_MARKET": 0.25,
@@ -85,7 +85,7 @@
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
     "VIX_sha256": "0fbd2010663102746b54b12bf96ab0ca4add0c922aebc4dabb0a84cd9c8b0e63",
-    "BAA_sha256": "2ea501d4c0ddcc6fe78f724d476358229f17335b417eaae3103226243ee10539",
-    "AAA_sha256": "7d863e7cabb0b95cedba9626e5221f2e1df72e63976d906c5728360c765ca32e"
+    "BAA_sha256": "9cd55cfd416e6f7626d54a138b62ad710598ddbf5ee42e61706310ab3608d348",
+    "AAA_sha256": "789235cc428701a7c111c14dfbd3ebb0d2542bf169fe62a0eae02218e1defab8"
   }
 }
