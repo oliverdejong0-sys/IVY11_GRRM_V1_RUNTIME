@@ -2,7 +2,7 @@
   "schema": "IVY11_GRRM_V1_FULL_RISK_V2",
   "runtime_revision": "V6.3_CACHE_SAFE",
   "target_market_date": "2026-11-13",
-  "generated_utc": "2026-11-14T03:24:57+00:00",
+  "generated_utc": "2026-11-14T06:54:48+00:00",
   "authority": "DIAGNOSTIC_ONLY / NO_PORTFOLIO_ACTION",
   "base_policy": {
     "base_data_date": "2026-10-02",
@@ -85,7 +85,7 @@
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
     "VIX_sha256": "d4e2b1199951501b7757814b6e1c2356394922a7ea8ef16d85c3a4596e6e2c2d",
-    "BAA_sha256": "342b934c1d1f4c0e2ce718b4d0762b703af49dc47e1f0c6494aa0536c14d1096",
-    "AAA_sha256": "1397ac317517859ec62f1eefb0fa9fb7663c0581c10826e0109b3e83de6c099a"
+    "BAA_sha256": "e465892dcf8dd4cadaed88ad6bc4d7d21ea8ff98bb1103239344eb683ab0d181",
+    "AAA_sha256": "198afa3ac59a3d14dac05efb0f86272ef811c80d1ff863292752567e77077d06"
   }
 }
