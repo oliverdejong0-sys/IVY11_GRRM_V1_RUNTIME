@@ -1,7 +1,7 @@
 # IVY11 – FAST DAILY Runtime Snapshot
 
 **Datenstand:** 2026-11-17  
-**Erzeugt:** 2026-11-18T04:35:56+00:00  
+**Erzeugt:** 2026-11-18T07:51:31+00:00  
 **Modus:** 🟠 **ALERT MODE**  
 **Action Authority:** SHADOW / keine automatische reale Cashaktion
 
