@@ -1,32 +1,32 @@
 {
   "schema": "IVY11_GRRM_V1_FAST_DAILY_V1",
-  "generated_utc": "2026-11-21T07:37:19+00:00",
-  "target_market_date": "2026-11-20",
+  "generated_utc": "2026-11-24T06:17:12+00:00",
+  "target_market_date": "2026-11-23",
   "frozen_anchor_date": "2026-10-02",
   "action_authority": "SHADOW / NO_AUTOMATIC_REAL_CASH_ACTION",
   "research_status": "CLEAN3F_vs_SENTINEL_70_75_PARALLEL_PROSPECTIVE",
   "values": {
-    "MSP_MARKET": 82.82367841515955,
-    "MSP_VOL": 96.52971465350782,
-    "MSP_CREDIT_CONTROL": 23.48986010194122,
-    "CLEAN3F_VOTE_PCT": 66.66666666666666,
-    "CLEAN3F_STRESS": true,
-    "CLEAN3F_R6_R7_COUNT": 162,
+    "MSP_MARKET": 74.40391254764029,
+    "MSP_VOL": 86.75855411348279,
+    "MSP_CREDIT_CONTROL": 27.309694209499025,
+    "CLEAN3F_VOTE_PCT": 22.22222222222222,
+    "CLEAN3F_STRESS": false,
+    "CLEAN3F_R6_R7_COUNT": 54,
     "FAST_SENTINEL_65_70": "ALERT",
     "SENTINEL_70_75": "STRESS",
-    "EQ_MA200_GAP_PCT": -5.689309036085954,
-    "EQ_DRAWDOWN_PCT": -11.459526655375562,
-    "EQ_RET_5D_PCT": -8.558134334142586,
-    "EQ_RET_20D_PCT": -9.231940188323385,
+    "EQ_MA200_GAP_PCT": -1.27957650613173,
+    "EQ_DRAWDOWN_PCT": -7.290562947825063,
+    "EQ_RET_5D_PCT": -2.386652326285299,
+    "EQ_RET_20D_PCT": -5.628652464125883,
     "D200": "RISK OFF",
-    "MODE": "DAILY STRESS WATCH",
-    "VIX_RAW": 35.89,
-    "BAA10Y_RAW": 1.56,
-    "AAA10Y_RAW": 1.1,
-    "BAA_DATE": "2026-11-19",
-    "AAA_DATE": "2026-11-19"
+    "MODE": "ALERT MODE",
+    "VIX_RAW": 26.62,
+    "BAA10Y_RAW": 1.61,
+    "AAA10Y_RAW": 1.15,
+    "BAA_DATE": "2026-11-20",
+    "AAA_DATE": "2026-11-20"
   },
-  "clean3f_vs_sentinel_70_75": "ÜBEREINSTIMMUNG",
+  "clean3f_vs_sentinel_70_75": "DIVERGENZ",
   "source_checks": {
     "SPY_return_overlap": {
       "pairs": 12,
@@ -46,9 +46,9 @@
     "VIX_url": "https://cdn-api.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
     "BAA_source": "FRED BAA10Y",
     "AAA_source": "FRED AAA10Y",
-    "VIX_sha256": "2a3b180ffb268b7805c17567c0ac7787c74898b0d99f62f550be67eafffd1c16",
-    "BAA_sha256": "5421537eab1c1b7a3418da3ba55aa4292a642ad5a355e741e4fd66de93ad6b63",
-    "AAA_sha256": "880160acafc88956e38c147206b236fa891a62725093c74eedd1e007e59a99b1"
+    "VIX_sha256": "409c4e80171f82285054875e0095aab5fd19b59670c987bc0e58f5919a69f3ee",
+    "BAA_sha256": "c8de7ecc1b8de23ed4be965d76ff4e1894f5508a51810637fd3b931bbcb63a96",
+    "AAA_sha256": "c9da59f7b365630027be30c44579f1bc1e70d98b63c84b23897eea1835d503f5"
   },
-  "replay_days_after_anchor": 35
+  "replay_days_after_anchor": 36
 }
