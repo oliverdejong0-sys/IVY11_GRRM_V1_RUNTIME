@@ -1,6 +1,6 @@
 # IVY11 – Markt-Regime-Diagnose Runtime Snapshot
 
-**Marktdatum Action Layer:** 2026-11-23  
+**Marktdatum Action Layer:** 2026-11-24  
 **BASE-Datenstand:** 2026-10-02  
 **BASE-Freshness:** BASE_REFRESH_REQUIRED  
 **Authority:** DIAGNOSTIC ONLY / keine Portfolio-Cashsteuerung
@@ -11,21 +11,21 @@
 - MSP: **31.33**
 
 ## Risikoindikatoren
-- MSP Market: **74.40**
-- MSP Credit: **27.31**
-- MSP Volatility: **86.76**
+- MSP Market: **75.82**
+- MSP Credit: **25.32**
+- MSP Volatility: **86.25**
 - Fast Sentinel 65/70: **ALERT**
-- CLEAN3F Vote: **22.2%**
+- CLEAN3F Vote: **33.3%**
 - Sentinel 70/75: **STRESS**
-- 200D-Abstand: **-1.28%**
-- Drawdown vom ATH: **-7.29%**
-- 5D-Bewegung: **-2.39%**
-- 20D-Bewegung: **-5.63%**
+- 200D-Abstand: **-1.79%**
+- Drawdown vom ATH: **-7.74%**
+- 5D-Bewegung: **-1.86%**
+- 20D-Bewegung: **-6.61%**
 
 ## Risk Pressure
-- aktuell: **60.9/100 – HOCH**
+- aktuell: **60.8/100 – HOCH**
 - letzter Monatsultimo: **44.2/100 (2026-10-02)**
-- Veränderung: **+16.8 Punkte**
+- Veränderung: **+16.7 Punkte**
 - Formel: **45% BASE VP + 25% MSP Market + 20% MSP Credit + 10% MSP Volatility**
 - Verwendung: **nur diagnostisch; keine Cash-/IVY-Steuerung**
 
